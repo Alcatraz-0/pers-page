@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="14" height="18" viewBox="0 0 14 18">
+  <!-- Black outline -->
+  <path d="M0,0 L0,13 L4,9 L7,16 L9,15 L6,8 L11,8 Z" fill="black"/>
+  <!-- White fill -->
+  <path d="M1,2 L1,11 L4,8 L7,14 L8,13 L5,6 L9,6 Z" fill="white"/>
+</svg>

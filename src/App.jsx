@@ -11,6 +11,8 @@ import AchievementToast from './components/AchievementToast'
 import Terminal from './components/Terminal'
 import ScrollProgress from './components/ScrollProgress'
 import Cursor from './components/Cursor'
+import ScrollWalker from './components/ScrollWalker'
+import WhackABug from './components/WhackABug'
 import SnakeGame from './components/SnakeGame'
 import QuizGame from './components/QuizGame'
 import RpgGame from './components/RpgGame'
@@ -32,6 +34,7 @@ export default function App() {
   const [snakeOpen, setSnakeOpen] = useState(false)
   const [quizOpen, setQuizOpen]   = useState(false)
   const [rpgOpen, setRpgOpen]     = useState(false)
+  const [wabActive, setWabActive] = useState(false)
   const [konamiOn, setKonamiOn]   = useState(false)
   const [transitioning, setTransitioning] = useState(false)
 
@@ -102,6 +105,7 @@ export default function App() {
 
       <ScrollProgress />
       <Cursor />
+      <ScrollWalker />
 
       <Nav dark={dark} setDark={toggleDark} palette={palette} setPalette={setPalette} />
 
@@ -120,6 +124,7 @@ export default function App() {
         <Footer />
       </div>
 
+      <WhackABug active={wabActive} />
       <AchievementToast />
 
       {/* Coin counter */}
@@ -167,6 +172,11 @@ export default function App() {
           onClick={() => setRpgOpen(true)}
           title="RPG battle (earn coins)"
         >⚔ RPG</button>
+        <button
+          className={`snake-launcher${wabActive ? ' konami-active' : ''}`}
+          onClick={() => setWabActive(a => !a)}
+          title="Whack-a-Bug! (earn 3 coins per squash)"
+        >🕷 BUGS</button>
       </div>
     </>
   )

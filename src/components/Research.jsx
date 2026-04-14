@@ -2,12 +2,33 @@ import { useScrollReveal } from '../hooks/useScrollReveal'
 import { RESEARCH } from '../data/index'
 
 const S = '/sprites/'
+const L = '/scenes/library/'
+
+// Library sprites to use as background tiles — pick varied items
+// Scattered positions [top%, left%] for each library tile
+const LIB_POSITIONS = [
+  [2,2],[2,14],[2,28],[2,72],[2,86],[2,96],
+  [30,0],[30,92],[30,98],
+  [55,1],[55,91],[55,97],
+  [78,2],[78,14],[78,72],[78,86],[78,96],[78,98],
+]
 
 export default function Research() {
   const [ref, visible] = useScrollReveal()
 
   return (
-    <section id="research" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`}>
+    <section id="research" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
+
+      {/* ── Library backdrop — scattered scene sprites, very faded ── */}
+      <div className="research-lib-bg" aria-hidden="true">
+        {LIB_POSITIONS.map(([top, left], i) => (
+          <img key={i}
+               src={`${L}Classroom_and_Library_Singles_48x48_${(i % 18) + 1}.png`}
+               alt="" className="lib-tile"
+               style={{ top: `${top}%`, left: `${left}%` }} />
+        ))}
+      </div>
+
       <p className="section-label">// RESEARCH LOG</p>
       <h2 className="section-title">RESEARCH</h2>
 

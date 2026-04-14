@@ -80,6 +80,9 @@ export default function Hero() {
   const sceneRef      = useRef(null)   // SceneCanvas imperative handle
   const scrollYRef    = useRef(0)
   const mouseOffRef   = useRef({ x: 0, y: 0 })
+  const cloudFarRef   = useRef(null)
+  const cloudMidRef   = useRef(null)
+  const cloudNearRef  = useRef(null)
 
   const sky = SKY_STATES[skyIdx]
   const currentBg = sky.variants[variantIdx % sky.variants.length]
@@ -161,6 +164,11 @@ export default function Hero() {
         stack.style.transform =
           `translateX(${-x * 0.003}px) translateY(${-(sY * 0.06) - (y * 0.002)}px)`
       }
+
+      // Cloud layers: mouse parallax at 3 depths (far=slow, near=fast, opposite direction)
+      if (cloudFarRef.current)  cloudFarRef.current.style.transform  = `translateX(${-x * 0.008}px) translateY(${-y * 0.004}px)`
+      if (cloudMidRef.current)  cloudMidRef.current.style.transform  = `translateX(${-x * 0.014}px) translateY(${-y * 0.007}px)`
+      if (cloudNearRef.current) cloudNearRef.current.style.transform = `translateX(${x  * 0.006}px) translateY(${y  * 0.003}px)`
 
       // Hero content: fade + lift — starts at 40% scroll, fully gone at 95%
       const inner = heroInnerRef.current
@@ -246,9 +254,9 @@ export default function Hero() {
 
         {/* Parallax cloud layers — 3 depths, auto-scroll at different speeds */}
         <div className="hero-parallax-clouds" aria-hidden="true">
-          <div className="hpc-layer hpc-far"  style={{ backgroundImage: `url('/clouds/${cloudSet}_far.png')`  }} />
-          <div className="hpc-layer hpc-mid"  style={{ backgroundImage: `url('/clouds/${cloudSet}_mid.png')`  }} />
-          <div className="hpc-layer hpc-near" style={{ backgroundImage: `url('/clouds/${cloudSet}_near.png')` }} />
+          <div ref={cloudFarRef}  className="hpc-layer hpc-far"  style={{ backgroundImage: `url('/clouds/${cloudSet}_far.png')`  }} />
+          <div ref={cloudMidRef}  className="hpc-layer hpc-mid"  style={{ backgroundImage: `url('/clouds/${cloudSet}_mid.png')`  }} />
+          <div ref={cloudNearRef} className="hpc-layer hpc-near" style={{ backgroundImage: `url('/clouds/${cloudSet}_near.png')` }} />
         </div>
 
         {/* Dawn fog */}

@@ -768,6 +768,20 @@ section {
   white-space: pre-line;
 }
 
+/* ── SCROLL WALKER — fixed right-margin character tracks scroll progress ── */
+.scroll-walker {
+  position: fixed;
+  right: 12px;
+  top: 0;
+  z-index: 200;
+  pointer-events: none;
+  will-change: transform;
+  transform: translateY(80px);
+  transition: transform 0.1s linear;
+  opacity: 0.82;
+}
+@media (max-width: 768px) { .scroll-walker { display: none; } }
+
 /* ── SPRITE WALKER ── */
 .sprite-walker {
   position: absolute;
@@ -912,6 +926,31 @@ section {
   will-change: transform;
   animation: skill-breathe 2.8s ease-in-out 1.8s infinite;
 }
+
+/* ── RESEARCH library backdrop ── */
+.research-lib-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.lib-tile {
+  position: absolute;
+  width: 64px; height: 64px;
+  image-rendering: pixelated;
+  opacity: 0.11;
+  filter: saturate(0.3) brightness(0.75);
+}
+[data-theme="dark"] .lib-tile {
+  opacity: 0.13;
+  filter: saturate(0.2) brightness(1.1) hue-rotate(190deg);
+}
+/* Ensure research content sits above the backdrop */
+#research .section-label,
+#research .section-title,
+#research .research-deco-row,
+#research .research-grid { position: relative; z-index: 1; }
 
 /* ── RESEARCH ── */
 .research-grid { display: grid; gap: 1.5rem; }
@@ -1928,6 +1967,15 @@ a.island-card:hover {
   opacity: 0.4;
 }
 
+/* ── Cursor sparkle particles ── */
+.cursor-sparkle {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 999997;
+  will-change: transform, opacity;
+}
+
 /* ── Theme transition flash ── */
 .theme-flash {
   position: fixed;
@@ -2275,6 +2323,52 @@ html.konami nav { border-bottom-color: transparent !important; }
   text-align: center;
   padding: 0.5rem 1rem;
   border-top: 1px solid #111;
+}
+
+/* ── Whack-a-Bug ── */
+.wab-score {
+  position: fixed;
+  top: 56px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--pixel);
+  font-size: 0.7rem;
+  background: var(--bg);
+  border: 2px solid var(--c1);
+  color: var(--c1);
+  padding: 4px 12px;
+  z-index: 9000;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.wab-bug {
+  position: fixed;
+  top: 0; left: 0;
+  width: 48px; height: 48px;
+  padding: 0; border: none; background: none;
+  cursor: crosshair;
+  z-index: 8999;
+  image-rendering: pixelated;
+  animation: wab-shake 0.4s ease infinite alternate;
+}
+.wab-bug img { image-rendering: pixelated; display: block; }
+.wab-bug:hover { transform: scale(1.2) !important; filter: brightness(1.3); }
+@keyframes wab-shake {
+  from { filter: drop-shadow(0 0 4px #ff4444); }
+  to   { filter: drop-shadow(0 0 8px #ff8800); }
+}
+.wab-splat {
+  position: fixed;
+  top: 0; left: 0;
+  font-family: var(--pixel);
+  font-size: 0.65rem;
+  color: #00e5cc;
+  z-index: 9001;
+  pointer-events: none;
+  animation: wab-pop 0.6s ease forwards;
+}
+@keyframes wab-pop {
+  0%   { opacity: 1; transform: translate(var(--tx), var(--ty)) translateY(0); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) translateY(-30px); }
 }
 
 /* ── Snake launcher (individual buttons inside .game-launcher-stack) ── */

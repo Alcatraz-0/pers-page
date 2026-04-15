@@ -53,7 +53,8 @@ export default function App() {
   const [wabActive, setWabActive] = useState(false)
   const [guestOpen, setGuestOpen] = useState(false)
   const [scoresOpen, setScoresOpen] = useState(false)
-  const [shopOpen, setShopOpen]     = useState(false)
+  const [shopOpen, setShopOpen]       = useState(false)
+  const [launcherOpen, setLauncherOpen] = useState(false)
   const [konamiOn, setKonamiOn]   = useState(false)
   const [transitioning, setTransitioning] = useState(false)
 
@@ -187,35 +188,44 @@ export default function App() {
 
       <HireMeXP />
 
-      {/* Game launcher buttons */}
+      {/* Game launcher — collapsible */}
       <div className="game-launcher-stack">
+        {launcherOpen && (
+          <div className="launcher-panel">
+            <button
+              className={`snake-launcher${konamiOn ? ' konami-active' : ''}`}
+              onClick={() => setSnakeOpen(true)}
+              title="Play Snake (earn coins)"
+            >◆ SNAKE</button>
+            <button
+              className="snake-launcher"
+              onClick={() => setQuizOpen(true)}
+              title="Trivia quiz (earn coins)"
+            >? QUIZ</button>
+            <button
+              className="snake-launcher"
+              onClick={() => setRpgOpen(true)}
+              title="RPG battle (earn coins)"
+            >⚔ RPG</button>
+            <button
+              className={`snake-launcher${wabActive ? ' konami-active' : ''}`}
+              onClick={() => setWabActive(a => !a)}
+              title="Whack-a-Bug! (earn 3 coins per squash)"
+            >🕷 BUGS</button>
+            <button className="snake-launcher" onClick={() => setGuestOpen(true)}>✉ BOOK</button>
+            <button className="snake-launcher" onClick={() => setGame2048Open(true)}>◈ 2048</button>
+            <button className="snake-launcher" onClick={() => setBreakoutOpen(true)}>▦ BREAK</button>
+            <button className="snake-launcher" onClick={() => setTyperOpen(true)}>⌨ TYPE</button>
+            <button className="snake-launcher" onClick={() => setInvadersOpen(true)}>👾 INVADE</button>
+            <button className="snake-launcher" onClick={() => setScoresOpen(true)}>⬛ SCORES</button>
+            <button className="snake-launcher" onClick={() => setShopOpen(true)}>☆ SHOP</button>
+          </div>
+        )}
         <button
-          className={`snake-launcher${konamiOn ? ' konami-active' : ''}`}
-          onClick={() => setSnakeOpen(true)}
-          title="Play Snake (earn coins)"
-        >◆ SNAKE</button>
-        <button
-          className="snake-launcher"
-          onClick={() => setQuizOpen(true)}
-          title="Trivia quiz (earn coins)"
-        >? QUIZ</button>
-        <button
-          className="snake-launcher"
-          onClick={() => setRpgOpen(true)}
-          title="RPG battle (earn coins)"
-        >⚔ RPG</button>
-        <button
-          className={`snake-launcher${wabActive ? ' konami-active' : ''}`}
-          onClick={() => setWabActive(a => !a)}
-          title="Whack-a-Bug! (earn 3 coins per squash)"
-        >🕷 BUGS</button>
-        <button className="snake-launcher" onClick={() => setGuestOpen(true)}>✉ BOOK</button>
-        <button className="snake-launcher" onClick={() => setGame2048Open(true)}>◈ 2048</button>
-        <button className="snake-launcher" onClick={() => setBreakoutOpen(true)}>▦ BREAK</button>
-        <button className="snake-launcher" onClick={() => setTyperOpen(true)}>⌨ TYPE</button>
-        <button className="snake-launcher" onClick={() => setInvadersOpen(true)}>👾 INVADE</button>
-        <button className="snake-launcher" onClick={() => setScoresOpen(true)}>⬛ SCORES</button>
-        <button className="snake-launcher" onClick={() => setShopOpen(true)}>☆ SHOP</button>
+          className={`launcher-toggle${launcherOpen ? ' open' : ''}`}
+          onClick={() => setLauncherOpen(o => !o)}
+          title={launcherOpen ? 'Close menu' : 'Games & Shop'}
+        >{launcherOpen ? '✕ CLOSE' : '◈ GAMES'}</button>
       </div>
     </>
   )

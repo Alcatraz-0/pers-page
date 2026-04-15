@@ -2421,21 +2421,17 @@ html.konami nav { border-bottom-color: transparent !important; }
   .achievement-toast { font-size: 0.45rem; padding: 8px 10px; }
 
   /* Game launcher stack */
-  .game-launcher-stack {
-    flex-wrap: wrap;
-    max-width: 90vw;
-    right: 5vw;
-    bottom: 60px;
-    gap: 4px;
-  }
+  .game-launcher-stack { right: 5vw; bottom: 60px; }
+  .launcher-panel { gap: 4px; }
   .snake-launcher { font-size: 0.4rem; padding: 4px 6px; }
+  .launcher-toggle { font-size: 0.4rem; padding: 5px 8px; }
 
   /* XP bar */
   .hire-xp-bar { padding: 4px 8px; font-size: 0.4rem; }
 }
 
 /* ══════════════════════════════════════════════
-   GAME LAUNCHER STACK (bottom-right above snake)
+   GAME LAUNCHER STACK (collapsible, bottom-right)
    ══════════════════════════════════════════════ */
 .game-launcher-stack {
   position: fixed;
@@ -2443,9 +2439,40 @@ html.konami nav { border-bottom-color: transparent !important; }
   right: 1.25rem;
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 0.4rem;
   z-index: 800;
   contain: layout;
+}
+
+.launcher-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.4rem;
+  animation: launcher-in 0.18s ease both;
+}
+@keyframes launcher-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.launcher-toggle {
+  font-family: var(--pixel);
+  font-size: 0.62rem;
+  padding: 7px 14px;
+  border: 2px solid var(--c1);
+  background: var(--card-bg);
+  color: var(--c1);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+}
+.launcher-toggle:hover,
+.launcher-toggle.open {
+  background: var(--c1);
+  color: var(--bg);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--c1) 40%, transparent);
 }
 
 /* ══════════════════════════════════════════════
@@ -3153,7 +3180,7 @@ html.konami nav { border-bottom-color: transparent !important; }
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 180px; /* leave room for game-launcher-stack */
+  right: 120px; /* leave room for launcher toggle */
   height: 28px;
   background: var(--card-bg);
   border-top: 2px solid var(--border);

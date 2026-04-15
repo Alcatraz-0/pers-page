@@ -113,8 +113,7 @@ export default function Hero() {
     const isDark = root.getAttribute('data-theme') === 'dark'
     if (sky.dark === isDark) return          // already in sync, nothing to do
     writingThemeRef.current = true
-    if (sky.dark) root.setAttribute('data-theme', 'dark')
-    else          root.removeAttribute('data-theme')
+    root.setAttribute('data-theme', sky.dark ? 'dark' : 'light')
     Promise.resolve().then(() => { writingThemeRef.current = false })
   }, [sky.dark])
 
@@ -165,10 +164,10 @@ export default function Hero() {
           `translateX(${-x * 0.003}px) translateY(${-(sY * 0.06) - (y * 0.002)}px)`
       }
 
-      // Cloud layers: mouse parallax at 3 depths (far=slow, near=fast, opposite direction)
-      if (cloudFarRef.current)  cloudFarRef.current.style.transform  = `translateX(${-x * 0.008}px) translateY(${-y * 0.004}px)`
-      if (cloudMidRef.current)  cloudMidRef.current.style.transform  = `translateX(${-x * 0.014}px) translateY(${-y * 0.007}px)`
-      if (cloudNearRef.current) cloudNearRef.current.style.transform = `translateX(${x  * 0.006}px) translateY(${y  * 0.003}px)`
+      // Cloud layers: mouse parallax + scroll depth (near moves faster than far)
+      if (cloudFarRef.current)  cloudFarRef.current.style.transform  = `translateX(${-x * 0.008}px) translateY(${-y * 0.004 + sY * 0.04}px)`
+      if (cloudMidRef.current)  cloudMidRef.current.style.transform  = `translateX(${-x * 0.014}px) translateY(${-y * 0.007 + sY * 0.08}px)`
+      if (cloudNearRef.current) cloudNearRef.current.style.transform = `translateX(${x  * 0.006}px) translateY(${y  * 0.003 + sY * 0.13}px)`
 
       // Hero content: fade + lift — starts at 40% scroll, fully gone at 95%
       const inner = heroInnerRef.current
@@ -220,7 +219,7 @@ export default function Hero() {
   const showMoon = sky.id === 'night' || sky.id === 'evening'
 
   // Parallax cloud set — maps each sky state to its cloud folder prefix
-  const cloudSet = { night: 'night', dawn: 'dawn', day: 'day', afternoon: 'afternoon', sunset: 'sunset', evening: 'evening', storm: 'storm' }[sky.id] ?? 'day'
+  const cloudSet = sky.id
 
   const handleMoonClick = useCallback(() => {
     sceneRef.current?.triggerMeteorShower()

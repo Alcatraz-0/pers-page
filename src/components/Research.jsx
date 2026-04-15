@@ -20,7 +20,7 @@ export default function Research() {
     <section id="research" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
 
       {/* ── Library backdrop — scattered scene sprites, very faded ── */}
-      <div className="research-lib-bg" aria-hidden="true">
+      <div className="scene-bg research-lib-bg" aria-hidden="true">
         {LIB_POSITIONS.map(([top, left], i) => (
           <img key={i}
                src={`${L}Classroom_and_Library_Singles_48x48_${(i % 18) + 1}.png`}

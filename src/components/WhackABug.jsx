@@ -38,6 +38,7 @@ export default function WhackABug({ active }) {
   const [score, setScore] = useState(0)
   const [squashed, setSquashed] = useState([])  // [{id, x, y}]
   const spawnRef = useRef(null)
+  const splatsRef = useRef([])
 
   const removeBug = useCallback((id) => {
     setBugs(prev => prev.filter(b => b.id !== id))
@@ -47,8 +48,9 @@ export default function WhackABug({ active }) {
     playSuccess()
     addCoins(3)
     setScore(s => s + 1)
-    setSquashed(prev => [...prev, { id, x, y, key: Date.now() }])
-    setTimeout(() => setSquashed(prev => prev.filter(s => s.id !== id)), 600)
+    setSquashed(prev => [...prev, { id, x, y }])
+    const t = setTimeout(() => setSquashed(prev => prev.filter(s => s.id !== id)), 600)
+    splatsRef.current.push(t)
     removeBug(id)
   }, [removeBug])
 
@@ -71,7 +73,11 @@ export default function WhackABug({ active }) {
       })
     }, SPAWN_INTERVAL)
 
-    return () => clearInterval(spawnRef.current)
+    return () => {
+      clearInterval(spawnRef.current)
+      splatsRef.current.forEach(clearTimeout)
+      splatsRef.current = []
+    }
   }, [active])
 
   // Expire bugs that weren't clicked
@@ -79,7 +85,10 @@ export default function WhackABug({ active }) {
     if (!active || bugs.length === 0) return
     const id = setInterval(() => {
       const now = Date.now()
-      setBugs(prev => prev.filter(b => now - b.born < BUG_LIFETIME))
+      setBugs(prev => {
+        const next = prev.filter(b => now - b.born < BUG_LIFETIME)
+        return next.length === prev.length ? prev : next
+      })
     }, 500)
     return () => clearInterval(id)
   }, [active, bugs.length])
@@ -113,8 +122,8 @@ export default function WhackABug({ active }) {
 
       {/* Squash splats */}
       {squashed.map(s => (
-        <div key={s.key} className="wab-splat"
-             style={{ transform: `translate(${s.x}px, ${s.y}px)` }}>
+        <div key={s.id} className="wab-splat"
+             style={{ left: `${s.x}px`, top: `${s.y}px` }}>
           +3 🪙
         </div>
       ))}

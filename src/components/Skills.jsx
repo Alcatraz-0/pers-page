@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { SKILL_GROUPS } from '../data/index'
 import { playClick } from '../utils/sound'
+import GitHubHeatmap from './GitHubHeatmap'
 
 const S = '/sprites/'
 
@@ -105,6 +106,8 @@ export default function Skills() {
           ))}
         </div>
       )}
+
+      <GitHubHeatmap />
     </section>
   )
 }

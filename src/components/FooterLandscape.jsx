@@ -130,37 +130,40 @@ export default function FooterLandscape() {
   const treeBgB = dark ? `${T}Birch Tree 1 stage 5.png`        : `${T}Hazel Tree stage 5.png`
   const treeBgC = dark ? `${T}Cedar Tree stage 5.png`          : `${T}Fir Tree stage 5.png`
 
+  // Midground trees — smaller stage 4, create depth between bg and foreground
+  const treeMidA = dark ? `${T}Oak Tree stage 4.png`           : `${T}Apple Tree stage 4.png`
+  const treeMidB = dark ? `${T}Willow Tree stage 4.png`        : `${T}Oak Tree stage 4.png`
+  const treeMidC = dark ? `${T}Apple Tree stage 4.png`         : `${T}Willow Tree stage 4.png`
+
   return (
     <div className="footer-landscape" style={{ background: skyBg }}>
 
-      {/* ── z:2 — Firefly canvas ── */}
       <canvas ref={fireflyRef} className="landscape-canvas" />
 
-      {/* ── z:3 — Background trees + shrine (distant layer) ── */}
       <div className="fl-bg-trees" aria-hidden="true">
         <img src={treeBgA} className="fl-bg-tree" style={{ left: '10%' }} />
         <img src={treeBgC} className="fl-bg-tree" style={{ left: '28%' }} />
         <img src={treeBgB} className="fl-bg-tree" style={{ right: '26%' }} />
         <img src={treeBgA} className="fl-bg-tree" style={{ right: '8%', transform: 'scaleX(-1) translateX(0)' }} />
-        {/* Japanese shrine — distant landmark */}
         <img src={`${S}animated_japanese_shrine_48x48.gif`} alt="" className="fl-shrine" />
-        {/* Night: candles flanking shrine */}
         {dark && <>
           <img src={`${S}animated_candle_48x48.gif`}      alt="" className="fl-candle fl-candle-l" />
           <img src={`${S}animated_wall_candle_48x48.gif`} alt="" className="fl-candle fl-candle-r" />
         </>}
       </div>
 
-      {/* ── z:4 — Contact island (floats in clearing) ── */}
+      <div className="fl-midground" aria-hidden="true">
+        <img src={treeMidA} className="fl-sprite fl-tree-mid" alt="" style={{ left: '18%' }} />
+        <img src={treeMidB} className="fl-sprite fl-tree-mid" alt="" style={{ left: '50%', transform: 'translateX(-50%)' }} />
+        <img src={treeMidC} className="fl-sprite fl-tree-mid" alt="" style={{ right: '16%' }} />
+      </div>
+
       <ContactIsland dark={dark} />
 
-      {/* ── z:5 — Foreground trees (full size, frame the scene) ── */}
       <img src={treeL} alt="" className="fl-tree-fore fl-tree-fore-l" />
       <img src={treeR} alt="" className="fl-tree-fore fl-tree-fore-r" />
 
-      {/* ── z:6 — Ground sprite row ── */}
       <div className="fl-ground-sprites">
-        {/* Frog trio — varied sizes for depth */}
         <img src={`${S}animated_frog_2_idle_48x48.gif`} alt="" className="fl-sprite fl-frog fl-frog-sm" />
         <img src={`${S}animated_frog_idle_48x48.gif`}   alt="" className="fl-sprite fl-frog fl-frog-md" />
         <div className="fl-cat-wrap" onClick={handleCatClick}>
@@ -169,14 +172,17 @@ export default function FooterLandscape() {
         </div>
         <img src={`${S}animated_frog_3_idle_48x48.gif`} alt="" className="fl-sprite fl-frog fl-frog-md" />
         <img src={`${S}animated_frog_4_idle_48x48.gif`} alt="" className="fl-sprite fl-frog fl-frog-sm" />
-        {/* Day: sprout easter egg / Night: candle */}
-        {!dark
-          ? <img src={`${S}animated_sprout_48x48.gif`}   alt="" className="fl-sprite fl-frog-sm" style={{ opacity: 0.85 }} />
-          : <img src={`${S}animated_candle_48x48.gif`}   alt="" className="fl-sprite fl-frog-sm" style={{ opacity: 0.9 }} />
-        }
+        {!dark ? <>
+          <img src={`${S}animated_sprout_48x48.gif`}      alt="" className="fl-sprite fl-frog-sm" style={{ opacity: 0.85 }} />
+          <img src={`${S}animated_butterfly_48x48.gif`}   alt="" className="fl-sprite fl-frog-sm" title="Butterfly" />
+          <img src={`${S}animated_butterfly_4_48x48.gif`} alt="" className="fl-sprite fl-frog-sm" title="Butterfly" />
+        </> : <>
+          <img src={`${S}animated_candle_48x48.gif`}      alt="" className="fl-sprite fl-frog-sm" title="Candle"      style={{ opacity: 0.9 }} />
+          <img src={`${S}animated_wall_candle_48x48.gif`} alt="" className="fl-sprite fl-frog-sm" title="Wall candle" style={{ opacity: 0.9 }} />
+        </>}
+        <img src={`${S}animated_coffee_48x48.gif`} alt="" className="fl-sprite fl-coffee" title="☕ Coffee break" />
       </div>
 
-      {/* Day-only: butterflies floating in the clearing */}
       {!dark && (
         <div className="fl-butterflies" aria-hidden="true">
           <img src={`${S}animated_butterfly_3_48x48.gif`} alt="" className="fl-butterfly" style={{ left: '24%',  animationDuration: '14s' }} />
@@ -185,13 +191,11 @@ export default function FooterLandscape() {
         </div>
       )}
 
-      {/* ── z:7 — Ground strip (covers all tree roots cleanly) ── */}
       <div className="fl-ground">
         <div className="fl-grass-edge" />
         <div className="fl-dirt" />
       </div>
 
-      {/* ── z:8 — Pixel sprite walker ── */}
       <div className="footer-sprite">
         <div className="sprite-walker"><PixelSprite /></div>
       </div>

@@ -14,11 +14,14 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
   const modeRef         = useRef(mode)
   const reinitRef       = useRef(false)
   const meteorShowerRef = useRef(false)   // set true to trigger burst next frame
+  const restartDrawRef  = useRef(null)    // set by main effect so reinit can restart loop
 
   useEffect(() => {
     if (modeRef.current !== mode) {
+      const wasIdle = modeRef.current === 'none'
       modeRef.current = mode
       reinitRef.current = true
+      if (wasIdle && mode !== 'none') restartDrawRef.current?.()
     }
   }, [mode])
 
@@ -64,18 +67,23 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
       }))
     }
 
-    function drawNightRain() {
+    // Shared rain-drop renderer used by night, evening, and storm modes
+    function drawRainDrops(drops, dxFactor, color) {
       ctx.lineWidth = 1
-      nightDrops.forEach(d => {
-        const dx = d.speed * 0.15
+      drops.forEach(d => {
+        const dx = d.speed * dxFactor
         ctx.globalAlpha = d.alpha
-        ctx.strokeStyle = 'rgba(160,190,255,0.6)'
+        ctx.strokeStyle = color
         ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + dx, d.y + d.len); ctx.stroke()
         d.x += dx; d.y += d.speed
-        if (d.y > H + 10) { d.y = rand(-30, -5); d.x = rand(0, W) }
-        if (d.x > W + 10) d.x -= W
+        if (d.y > H + 20) { d.y = rand(-40, -5); d.x = rand(0, W) }
+        if (d.x > W + 20) d.x -= W
       })
       ctx.globalAlpha = 1
+    }
+
+    function drawNightRain() {
+      drawRainDrops(nightDrops, 0.15, 'rgba(160,190,255,0.6)')
     }
 
     function drawStars() {
@@ -135,25 +143,7 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
     }
 
     function drawRain() {
-      ctx.strokeStyle = 'rgba(180, 210, 255, 0.45)'
-      ctx.lineWidth = 1
-      drops.forEach(d => {
-        // slight diagonal
-        const dx = d.speed * 0.18
-        ctx.globalAlpha = d.alpha
-        ctx.beginPath()
-        ctx.moveTo(d.x, d.y)
-        ctx.lineTo(d.x + dx, d.y + d.len)
-        ctx.stroke()
-        d.x += dx
-        d.y += d.speed
-        if (d.y > H + 20) {
-          d.y = rand(-40, -10)
-          d.x = rand(0, W)
-        }
-        if (d.x > W + 20) d.x -= W
-      })
-      ctx.globalAlpha = 1
+      drawRainDrops(drops, 0.18, 'rgba(180, 210, 255, 0.45)')
     }
 
     // Draw a jagged lightning bolt from (sx,sy) downward
@@ -238,18 +228,7 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
     }
 
     function drawEvening() {
-      // Soft rain
-      ctx.lineWidth = 1
-      softDrops.forEach(d => {
-        const dx = d.speed * 0.12
-        ctx.globalAlpha = d.alpha
-        ctx.strokeStyle = 'rgba(180,200,240,0.5)'
-        ctx.beginPath(); ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + dx, d.y + d.len); ctx.stroke()
-        d.x += dx; d.y += d.speed
-        if (d.y > H + 10) { d.y = rand(-30, -5); d.x = rand(0, W) }
-        if (d.x > W + 10) d.x -= W
-      })
-      ctx.globalAlpha = 1
+      drawRainDrops(softDrops, 0.12, 'rgba(180,200,240,0.5)')
 
       // Fireflies — small glowing squares that pulse and drift
       flies.forEach(f => {
@@ -281,7 +260,7 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
 
     // ── Main loop ─────────────────────────────────────────────────────────────
     function draw(ts) {
-      if (!visible) { raf = null; return }
+      if (!visible || modeRef.current === 'none') { raf = null; return }
       if (ts - lastFrame < FRAME_MS) { raf = requestAnimationFrame(draw); return }
       lastFrame = ts
 
@@ -334,20 +313,22 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
       init()
     }
 
+    restartDrawRef.current = () => { if (visible && !raf) raf = requestAnimationFrame(draw) }
+
     const resizeObs = new ResizeObserver(resize)
     resizeObs.observe(canvas)
     resize()
 
     const io = new IntersectionObserver(([e]) => {
       visible = e.isIntersecting
-      if (visible && !raf) raf = requestAnimationFrame(draw)
+      if (visible && !raf && modeRef.current !== 'none') raf = requestAnimationFrame(draw)
     }, { threshold: 0 })
     io.observe(canvas)
-    raf = requestAnimationFrame(draw)
+    if (modeRef.current !== 'none') raf = requestAnimationFrame(draw)
 
     return () => {
       if (raf) cancelAnimationFrame(raf)
-      raf = null; io.disconnect(); resizeObs.disconnect()
+      raf = null; restartDrawRef.current = null; io.disconnect(); resizeObs.disconnect()
     }
   }, [])
 

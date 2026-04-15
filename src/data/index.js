@@ -6,6 +6,7 @@ export const PROJECTS = [
     category: 'ml',
     desc: 'Hierarchical two-stage RAG system processing 150 SEC 10-K filings (8 GB, 45 K text chunks, 12 K tables) with hybrid dense+sparse retrieval achieving 85% Table Recall@5 and 12-point EM improvement over text-only baselines. Intelligent query routing detects table-centric questions with 96% faithfulness and 4.2s median latency.',
     tech: ['LLaMA 3.2', 'FAISS', 'BM25', 'RAG', 'FinQA', 'Sentence-Transformers', 'LangChain', 'ChromaDB', 'Python', 'HuggingFace'],
+    github: 'https://github.com/Alcatraz-0/multimodal-rag-sec',
   },
   {
     id: '002',
@@ -14,6 +15,7 @@ export const PROJECTS = [
     category: 'data',
     desc: 'End-to-end urban analytics pipeline processing 3.7 M property tax records (6 GB GeoJSON) across 93 San Francisco neighborhoods. ETL system with 87.1% memory optimization (5.7 GB → 733 MB). Composite risk model revealing 59.6% median property appreciation (2015–2023) and displacement zone analysis for 67 K+ properties.',
     tech: ['Python', 'GeoJSON', 'ETL', 'Plotly', 'Pandas', 'GeoPandas', 'NumPy', 'Shapely', 'SQL'],
+    github: 'https://github.com/Alcatraz-0/sf-property-tax-analysis',
   },
   {
     id: '003',
@@ -22,6 +24,7 @@ export const PROJECTS = [
     category: 'ml',
     desc: 'Analyzed 938 K crash records with 48 features using ensemble models (Random Forest, XGBoost, Neural Networks) achieving 0.597 RMSE for injury prediction. Discovered 90% pedestrian injury rate corridors. Deployed interactive dashboards on GitHub Pages with DBSCAN clustering for geographic hotspot identification.',
     tech: ['XGBoost', 'Random Forest', 'DBSCAN', 'Folium', 'GitHub Pages', 'Scikit-learn', 'Neural Networks', 'Python', 'Matplotlib'],
+    github: 'https://github.com/Alcatraz-0/chicago-traffic-analytics',
   },
   {
     id: '004',
@@ -30,6 +33,7 @@ export const PROJECTS = [
     category: 'ml',
     desc: "Comprehensive fairness evaluation framework combining Meta's Ad Library (66 K ads, 56 US regions), FairJobs benchmark (1 M+ rows), and synthetic data. Achieved 93.4% reduction in statistical parity difference with 99.2% accuracy. Improved Disparate Impact Ratio from non-compliant 0.70 to near-compliant 0.98. Published 11-page ACM research paper.",
     tech: ['Fairlearn', 'AIF360', 'Altair', 'Algorithmic Fairness', 'Python', 'Scikit-learn', 'Pandas', 'ACM Research'],
+    github: 'https://github.com/Alcatraz-0/fairness-targeted-ads',
   },
   {
     id: '005',
@@ -38,6 +42,7 @@ export const PROJECTS = [
     category: 'cloud',
     desc: 'Hadoop-based NLP pipeline preprocessing 40 GB of LLM training data using Scala — 3× faster than single-node. BPE tokenization with context-preserving sliding window (stride: 128 tokens). gRPC connectors between Akka HTTP on EC2 and AWS Lambda for sub-100 ms inference. LLaMA3 on Bedrock with CloudWatch monitoring cutting debug time 60%.',
     tech: ['Hadoop', 'Scala', 'AWS Bedrock', 'gRPC', 'LLaMA3', 'MapReduce', 'Akka HTTP', 'AWS Lambda', 'EC2', 'CloudWatch'],
+    github: 'https://github.com/Alcatraz-0/distributed-llm-pipeline',
   },
   {
     id: '006',
@@ -46,6 +51,7 @@ export const PROJECTS = [
     category: 'cloud',
     desc: 'Built at Oplexa: multi-cloud IaaS platform targeting 30–60% cost savings for 3,000+ Fortune 1000 enterprises with $1.4M+ GPU budgets. Cross-cloud GPU benchmarking across NVIDIA, AWS, and GCP. Distributed control plane with REST API for federated compute orchestration across 10+ cloud providers and on-prem data centers.',
     tech: ['Kubernetes', 'AWS', 'GCP', 'REST API', 'Docker', 'Linux', 'Terraform', 'NVIDIA GPUs', 'Python', 'PostgreSQL'],
+    github: 'https://github.com/Alcatraz-0/multicloud-iaas-platform',
   },
 ]
 

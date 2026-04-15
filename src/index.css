@@ -40,14 +40,14 @@
   --card-bg: #24201b;
 }
 
-/* Base rem scale — 16px standard */
-html { font-size: 16px; scroll-behavior: smooth; }
+/* Base rem scale — 17px for comfortable reading */
+html { font-size: 17px; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--body);
-  font-size: 15px;  /* body prose stays at comfortable 16px */
+  font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
   transition: background 0.3s, color 0.3s;
@@ -660,7 +660,7 @@ section {
 
 .hero-role {
   font-family: var(--pixel);
-  font-size: clamp(0.65rem, 1.5vw, 0.85rem);
+  font-size: clamp(0.82rem, 1.6vw, 1.05rem);
   color: var(--muted);
   margin-bottom: 1.5rem;
   line-height: 1.8;
@@ -782,6 +782,31 @@ section {
 }
 @media (max-width: 768px) { .scroll-walker { display: none; } }
 
+@keyframes walker-jump {
+  0%   { transform: translateY(0px); }
+  30%  { transform: translateY(-12px) scale(1.05); }
+  60%  { transform: translateY(-4px); }
+  100% { transform: translateY(0px); }
+}
+.scroll-walker.walker-jumping canvas {
+  animation: walker-jump 0.4s ease;
+}
+.walker-bubble {
+  position: absolute; right: 110%; top: 0;
+  background: var(--card-bg); border: 2px solid var(--border);
+  box-shadow: 3px 3px 0 var(--shadow); padding: 4px 8px;
+  font-family: var(--pixel); font-size: 0.4rem; color: var(--ink);
+  white-space: nowrap; animation: bubble-pop 0.3s ease; pointer-events: none; z-index: 1;
+}
+.walker-bubble::after {
+  content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
+  border: 5px solid transparent; border-left-color: var(--border);
+}
+@keyframes bubble-pop {
+  from { opacity: 0; transform: scale(0.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
 /* ── SPRITE WALKER ── */
 .sprite-walker {
   position: absolute;
@@ -850,7 +875,7 @@ section {
 .project-badge {
   display: inline-block;
   font-family: var(--pixel);
-  font-size: 0.35rem;
+  font-size: 0.6rem;
   padding: 3px 8px;
   border: 2px solid var(--c1);
   background: var(--c1);
@@ -868,7 +893,7 @@ section {
 .tech-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.75rem; }
 .tech-tag {
   font-family: var(--pixel);
-  font-size: 0.28rem;
+  font-size: 0.52rem;
   padding: 2px 6px;
   border: 2px solid var(--border);
   color: var(--muted);
@@ -927,14 +952,42 @@ section {
   animation: skill-breathe 2.8s ease-in-out 1.8s infinite;
 }
 
-/* ── RESEARCH library backdrop ── */
-.research-lib-bg {
+/* ── GITHUB HEATMAP ── */
+.heatmap-wrap { margin-top: 2.5rem; position: relative; overflow-x: auto; }
+.heatmap-grid { display: flex; gap: 2px; }
+.heatmap-col  { display: flex; flex-direction: column; gap: 2px; }
+.heatmap-cell {
+  width: 11px; height: 11px;
+  image-rendering: pixelated;
+  border-radius: 1px;
+  cursor: default;
+}
+.heatmap-l0 { background: var(--border); }
+.heatmap-l1 { background: color-mix(in srgb, var(--c1) 25%, var(--border)); }
+.heatmap-l2 { background: color-mix(in srgb, var(--c1) 50%, var(--border)); }
+.heatmap-l3 { background: color-mix(in srgb, var(--c1) 75%, var(--border)); }
+.heatmap-l4 { background: var(--c1); }
+.heatmap-tooltip {
+  position: fixed;
+  font-family: var(--pixel); font-size: 0.42rem;
+  background: var(--card-bg); border: 1px solid var(--border);
+  padding: 4px 8px; pointer-events: none; z-index: 1000;
+  white-space: nowrap;
+}
+.heatmap-error, .heatmap-loading {
+  font-family: var(--pixel); font-size: 0.55rem; color: var(--muted);
+}
+
+/* ── Shared section scene backdrop (library, conference hall, …) ── */
+.scene-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
   z-index: 0;
   overflow: hidden;
 }
+
+/* ── RESEARCH library backdrop ── */
 .lib-tile {
   position: absolute;
   width: 64px; height: 64px;
@@ -951,6 +1004,25 @@ section {
 #research .section-title,
 #research .research-deco-row,
 #research .research-grid { position: relative; z-index: 1; }
+
+/* ── TIMELINE conference hall backdrop ── */
+.conf-tile {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  opacity: 0.13;
+  transform: translate(-50%, -50%);
+  filter: saturate(0.3) brightness(0.75);
+}
+[data-theme="dark"] .conf-tile {
+  opacity: 0.15;
+  filter: saturate(0.2) brightness(1.1) hue-rotate(200deg);
+}
+/* Ensure timeline content sits above the backdrop */
+#resume .section-label,
+#resume .section-title,
+#resume .timeline-layout { position: relative; z-index: 1; }
 
 /* ── RESEARCH ── */
 .research-grid { display: grid; gap: 1.5rem; }
@@ -1064,6 +1136,17 @@ section {
 }
 .contact-value:hover { color: var(--c1); }
 
+/* ── NOW ── */
+.now-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+.now-card { display: flex; flex-direction: column; gap: 0.6rem; }
+.now-icon { font-size: 1.4rem; }
+.now-label { font-family: var(--pixel); font-size: 0.52rem; color: var(--c2); letter-spacing: 0.08em; }
+.now-value { font-size: 0.95rem; color: var(--ink); line-height: 1.5; }
+
 /* ── DIVIDER ── */
 .divider { border: none; border-top: 2px solid var(--border); margin: 0 2rem; transition: border-color 0.3s; }
 
@@ -1096,6 +1179,7 @@ footer {
    z-index stack:
      2  landscape-canvas (fireflies)
      3  fl-bg-trees  (distant forest, faded)
+     4  fl-midground (mid-distance trees)
      4  contact-island
      5  fl-tree-fore (main left/right trees)
      6  fl-ground-sprites (creatures on ground)
@@ -1406,8 +1490,32 @@ a.island-card:hover {
 .fl-candle-l { right: calc(18% + 52px); }
 .fl-candle-r { right: calc(18% - 40px); }
 
-/* Grassland fauna sprites */
-/* Background layer sprites (shrine, lanterns) */
+/* ── Midground tree layer (z:4) ── */
+.fl-midground {
+  position: absolute;
+  bottom: 28%;
+  width: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+.fl-tree-mid {
+  position: absolute;
+  height: 80px !important;
+  width: auto !important;
+  image-rendering: pixelated;
+  opacity: 0.7;
+  animation: none;
+}
+[data-theme="dark"] .fl-tree-mid {
+  filter: brightness(0.8) saturate(0.4) hue-rotate(185deg);
+}
+
+/* ── Coffee easter egg ── */
+.fl-coffee {
+  width: 64px !important;
+  height: 64px !important;
+  opacity: 0.9;
+}
 
 /* Hero butterfly GIFs */
 .hero-butterfly-gif {
@@ -1618,6 +1726,13 @@ a.island-card:hover {
   font-size: 0.72rem;
   color: var(--muted);
   letter-spacing: 0.08em;
+}
+.visitor-counter {
+  font-family: var(--pixel);
+  font-size: 0.52rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
 }
 
 /* ── BOOT SEQUENCE ── */
@@ -2068,6 +2183,10 @@ html.konami nav { border-bottom-color: transparent !important; }
 }
 .flip-tech-dot { color: var(--c1); }
 .flip-link { margin-top: 0.75rem; text-align: center; }
+.flip-section { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 0.75rem; }
+.flip-section-label { font-family: var(--pixel); font-size: 0.42rem; color: var(--c2); letter-spacing: 0.1em; }
+.flip-impact { font-size: 0.82rem; color: var(--ink); line-height: 1.4; }
+.flip-links { flex-direction: row !important; gap: 0.5rem; margin-top: auto; flex-wrap: wrap; }
 
 /* ── Skill view toggle ── */
 .skill-view-toggle {
@@ -2200,57 +2319,6 @@ html.konami nav { border-bottom-color: transparent !important; }
 .gh-repo-lang { font-family: var(--pixel); font-size: 0.34rem; color: var(--c2); }
 .gh-repo-stars { font-family: var(--pixel); font-size: 0.34rem; color: var(--muted); }
 
-/* ── Music player ── */
-.music-player {
-  position: fixed;
-  bottom: 5.5rem;
-  right: 1.25rem;
-  z-index: 900;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.5rem;
-}
-.music-toggle {
-  width: 40px; height: 40px;
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  color: var(--c1);
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-}
-.music-toggle:hover { border-color: var(--c1); background: var(--bg); }
-.music-controls {
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  animation: slide-in-right 0.2s ease-out;
-}
-@keyframes slide-in-right {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: none; }
-}
-.music-title {
-  font-family: var(--pixel);
-  font-size: 0.72rem;
-  color: var(--c1);
-  white-space: nowrap;
-}
-.music-play-btn {
-  font-family: var(--pixel);
-  font-size: 0.72rem;
-  padding: 4px 8px;
-  border: 1px solid var(--c1);
-  background: none;
-  color: var(--c1);
-  cursor: pointer;
-}
-.music-play-btn:hover { background: var(--c1); color: #000; }
-
 /* ── Snake game ── */
 .snake-overlay {
   position: fixed;
@@ -2325,6 +2393,13 @@ html.konami nav { border-bottom-color: transparent !important; }
   border-top: 1px solid #111;
 }
 
+/* ── 2048 game ── */
+.game2048-modal { width: min(380px, 96vw); }
+.game2048-body  { padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; position: relative; }
+.game2048-grid  { display: grid; grid-template-columns: repeat(4, 70px); grid-template-rows: repeat(4, 70px); gap: 6px; background: #bbada0; padding: 6px; }
+.game2048-cell  { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-family: var(--pixel); font-size: 0.65rem; font-weight: bold; background: #cdc1b4; }
+.game2048-overlay-msg { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; font-family: var(--pixel); font-size: 0.6rem; color: #fff; z-index: 10; }
+
 /* ── Whack-a-Bug ── */
 .wab-score {
   position: fixed;
@@ -2351,7 +2426,7 @@ html.konami nav { border-bottom-color: transparent !important; }
   animation: wab-shake 0.4s ease infinite alternate;
 }
 .wab-bug img { image-rendering: pixelated; display: block; }
-.wab-bug:hover { transform: scale(1.2) !important; filter: brightness(1.3); }
+.wab-bug:hover { filter: brightness(1.3) drop-shadow(0 0 6px #ff6600); }
 @keyframes wab-shake {
   from { filter: drop-shadow(0 0 4px #ff4444); }
   to   { filter: drop-shadow(0 0 8px #ff8800); }
@@ -2367,8 +2442,8 @@ html.konami nav { border-bottom-color: transparent !important; }
   animation: wab-pop 0.6s ease forwards;
 }
 @keyframes wab-pop {
-  0%   { opacity: 1; transform: translate(var(--tx), var(--ty)) translateY(0); }
-  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) translateY(-30px); }
+  0%   { opacity: 1; transform: translateY(0px); }
+  100% { opacity: 0; transform: translateY(-36px); }
 }
 
 /* ── Snake launcher (individual buttons inside .game-launcher-stack) ── */
@@ -2413,38 +2488,20 @@ html.konami nav { border-bottom-color: transparent !important; }
   .hero-stats { flex-direction: column; }
   section { padding: 3rem 1.25rem; }
   .hero-inner { padding: 0 1.25rem; }
+  /* Footer landscape — shrink sprites and remove massive side padding */
+  .fl-ground-sprites { padding: 0 12px; gap: 0.6rem; }
+  .fl-sprite { width: 56px; height: 56px; }
+  .fl-tree-fore { height: 200px; }
+  .footer-landscape { height: 420px; }
 }
 @media (max-width: 480px) {
   .hero-name { font-size: 1.1rem; }
   .section-title { font-size: 0.8rem; }
   .btn { font-size: 0.58rem; padding: 10px 14px; }
-  .dark-toggle { font-size: 0.35rem; padding: 4px 6px; }
-}
-
-/* ══════════════════════════════════════════════
-   THEME FLOAT BUTTON (above terminal)
-   ══════════════════════════════════════════════ */
-.theme-float-btn {
-  position: fixed;
-  bottom: 4.5rem;     /* sits above the terminal-toggle at 1.5rem */
-  left: 1.5rem;
-  z-index: 999;
-  font-size: 1rem;
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  color: var(--ink);
-  width: 2.4rem;
-  height: 2.4rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 0 var(--border);
-  transition: border-color 0.15s, box-shadow 0.15s;
-}
-.theme-float-btn:hover {
-  border-color: var(--c1);
-  box-shadow: 2px 2px 0 0 var(--c1);
+  /* footer even more compact */
+  .fl-ground-sprites { padding: 0 8px; gap: 0.35rem; }
+  .fl-sprite { width: 44px; height: 44px; }
+  .footer-landscape { height: 360px; }
 }
 
 /* ══════════════════════════════════════════════
@@ -2833,22 +2890,6 @@ html.konami nav { border-bottom-color: transparent !important; }
   height: 64px;
 }
 
-/* ── Hover jiggle ── */
-@keyframes px-jiggle {
-  0%   { transform: scale(1)    rotate(0deg); }
-  20%  { transform: scale(1.15) rotate(-6deg); }
-  40%  { transform: scale(1.18) rotate(5deg); }
-  60%  { transform: scale(1.12) rotate(-4deg); }
-  80%  { transform: scale(1.08) rotate(3deg); }
-  100% { transform: scale(1)    rotate(0deg); }
-}
-.px-sprite:hover,
-.fl-sprite:hover,
-.footer-sprite:hover {
-  animation: px-jiggle 0.4s ease forwards !important;
-  cursor: pointer;
-}
-
 /* ── Keyframe animations ── */
 @keyframes px-float {
   0%, 100% { transform: translateY(0); }
@@ -2871,12 +2912,13 @@ html.konami nav { border-bottom-color: transparent !important; }
   50%       { transform: translateY(-6px) scale(1.04); }
 }
 @keyframes px-jiggle {
-  0%   { transform: scale(1)    rotate(0deg);   }
-  20%  { transform: scale(1.18) rotate(-8deg);  }
-  40%  { transform: scale(1.12) rotate(7deg);   }
-  60%  { transform: scale(1.06) rotate(-4deg);  }
-  80%  { transform: scale(1.02) rotate(2deg);   }
-  100% { transform: scale(1)    rotate(0deg);   }
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25%       { transform: scale(1.15) rotate(-5deg); }
+  60%       { transform: scale(1.1) rotate(4deg); }
+}
+@keyframes sparkle-drift {
+  0%   { opacity: 0.9; transform: translateY(0px)  rotate(0deg);   }
+  100% { opacity: 0;   transform: translateY(-22px) rotate(45deg); }
 }
 @keyframes skill-breathe {
   0%, 100% { filter: brightness(1);   }
@@ -2887,7 +2929,7 @@ html.konami nav { border-bottom-color: transparent !important; }
 .px-sprite-lg:hover,
 .scene-fauna:hover,
 .hero-butterfly-gif:hover {
-  animation: px-jiggle 0.45s ease !important;
+  animation: px-jiggle 0.38s ease;
   cursor: pointer;
 }
 
@@ -3017,3 +3059,73 @@ html.konami nav { border-bottom-color: transparent !important; }
   .timeline-item { flex-direction: row; }
   .tl-sprite { display: none; }
 }
+
+/* ══════════════════════════════════════════════
+   HIRE ME XP BAR
+   ══════════════════════════════════════════════ */
+.hire-xp-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 180px; /* leave room for game-launcher-stack */
+  height: 28px;
+  background: var(--card-bg);
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  z-index: 799;
+  font-family: var(--pixel);
+  font-size: 0.42rem;
+}
+.hire-xp-label { color: var(--c2); white-space: nowrap; }
+.hire-xp-track { flex: 1; height: 10px; background: var(--border); border: 1px solid var(--shadow); }
+.hire-xp-fill  { height: 100%; background: var(--c1); transition: width 0.4s ease; }
+.hire-xp-pct   { color: var(--muted); white-space: nowrap; }
+.hire-xp-cta   {
+  font-family: var(--pixel); font-size: 0.4rem; padding: 3px 8px;
+  background: var(--c1); color: #fff; border: 1px solid var(--c1);
+  cursor: pointer; animation: hire-pulse 1.2s ease infinite;
+}
+@keyframes hire-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c1) 60%, transparent); }
+  50%       { box-shadow: 0 0 0 6px transparent; }
+}
+
+/* ── Guestbook ── */
+.guestbook-modal { width: min(480px, 96vw); }
+.guestbook-body  { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; max-height: 60vh; overflow: hidden; }
+.guestbook-form  { display: flex; flex-direction: column; gap: 0.5rem; }
+.guestbook-input {
+  font-family: var(--pixel); font-size: 0.5rem;
+  background: var(--bg); color: var(--ink);
+  border: 2px inset var(--border); padding: 6px 8px;
+  width: 100%; box-sizing: border-box;
+}
+.guestbook-textarea { resize: none; }
+.guestbook-submit { align-self: flex-start; }
+.guestbook-entries { overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+.guestbook-note {
+  background: var(--card-bg); border: 2px solid var(--border);
+  padding: 0.6rem 0.75rem; box-shadow: 3px 3px 0 var(--shadow);
+}
+.guestbook-note-name { font-family: var(--pixel); font-size: 0.48rem; color: var(--c1); }
+.guestbook-note-date { font-size: 0.75rem; color: var(--muted); margin-left: 0.5rem; }
+.guestbook-note-msg  { font-size: 0.85rem; color: var(--ink); margin-top: 0.3rem; line-height: 1.4; }
+.guestbook-empty { font-family: var(--pixel); font-size: 0.5rem; color: var(--muted); }
+
+/* ── Breakout game ── */
+.breakout-modal { width: min(420px, 98vw); }
+.breakout-canvas { display: block; cursor: crosshair; border: 2px solid var(--border); }
+
+/* ── Space Invaders ── */
+.invaders-modal { width: min(420px, 98vw); }
+
+/* ── Code Typer ── */
+.ctyper-modal { width: min(520px, 96vw); }
+.ctyper-body  { padding: 1rem; background: #0d1117; display: flex; flex-direction: column; gap: 0.75rem; }
+.ctyper-lang  { font-family: var(--pixel); font-size: 0.45rem; color: var(--c2); letter-spacing: 0.15em; }
+.ctyper-code  { font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.6; white-space: pre; overflow-x: auto; background: #161b22; padding: 0.75rem; border: 1px solid #30363d; min-height: 80px; }
+.ctyper-input { font-family: 'Courier New', monospace; font-size: 0.78rem; background: #161b22; color: #e6edf3; border: 1px solid var(--c1); padding: 0.5rem; resize: none; width: 100%; box-sizing: border-box; outline: none; }
+.ctyper-result { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: var(--pixel); font-size: 0.5rem; color: var(--c1); }

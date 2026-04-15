@@ -2,6 +2,13 @@ import { useScrollReveal } from '../hooks/useScrollReveal'
 import { EDUCATION, EXPERIENCE } from '../data/index'
 
 const S = '/sprites/'
+const L = '/scenes/conference/'
+
+const CONF_POSITIONS = [
+  [5,4],[5,20],[5,36],[5,52],[5,68],[5,84],
+  [22,4],[22,20],[22,36],[22,52],[22,68],[22,84],
+  [39,4],[39,20],[39,36],[39,52],[39,68],[39,84],
+]
 
 function TimelineItem({ date, org, role, bullets, icon }) {
   return (
@@ -34,7 +41,21 @@ export default function Timeline() {
   const [ref, visible] = useScrollReveal()
 
   return (
-    <section id="resume" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`}>
+    <section id="resume" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
+
+      <div className="scene-bg tl-conf-bg" aria-hidden="true">
+        {CONF_POSITIONS.map(([top, left], i) => (
+          <img
+            key={i}
+            src={`${L}Conference_Hall_Singles_48x48_${i + 1}.png`}
+            className="conf-tile"
+            style={{ top: `${top}%`, left: `${left}%` }}
+            loading="lazy"
+            alt=""
+          />
+        ))}
+      </div>
+
       <p className="section-label">// GAME HISTORY</p>
       <h2 className="section-title">RESUME</h2>
 

@@ -9,11 +9,3 @@ export const addCoins = (n) => {
   return next
 }
 
-export const spendCoins = (n) => {
-  const cur = getCoins()
-  if (cur < n) return false
-  const next = cur - n
-  localStorage.setItem(KEY, String(next))
-  window.dispatchEvent(new CustomEvent('coins-update', { detail: next }))
-  return true
-}

@@ -2,6 +2,16 @@ import { useState } from 'react'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 import { PROJECTS, PROJECT_FILTERS } from '../data/index'
 import { playClick } from '../utils/sound'
+
+function ProjLink({ href, variant, children }) {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer"
+       className={`btn ${variant} flip-link`} onClick={e => e.stopPropagation()}>
+      {children}
+    </a>
+  )
+}
+
 function FlipCard({ p }) {
   const [flipped, setFlipped] = useState(false)
 
@@ -12,7 +22,6 @@ function FlipCard({ p }) {
       title={flipped ? 'Click to flip back' : 'Click to see details'}
     >
       <div className="flip-card-inner">
-        {/* Front */}
         <div className="flip-card-front card project-card">
           <span className="project-file">FILE_{p.id}</span>
           <h3 className="project-name">{p.name}</h3>
@@ -23,29 +32,32 @@ function FlipCard({ p }) {
           </div>
           <span className="flip-hint">[ CLICK TO FLIP ]</span>
         </div>
-        {/* Back */}
         <div className="flip-card-back card project-card">
-          <span className="project-file">FILE_{p.id} · TECH STACK</span>
+          <span className="project-file">FILE_{p.id} · CASE STUDY</span>
           <h3 className="project-name">{p.name}</h3>
-          <div className="flip-tech-list">
-            {p.tech.map(t => (
-              <div key={t} className="flip-tech-item">
-                <span className="flip-tech-dot">▶</span>
-                <span>{t}</span>
-              </div>
-            ))}
+
+          <div className="flip-section">
+            <span className="flip-section-label">IMPACT</span>
+            <p className="flip-impact">{p.desc.split('.')[0]}.</p>
           </div>
-          {p.href && (
-            <a
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-primary flip-link"
-              onClick={e => e.stopPropagation()}
-            >
-              VIEW PROJECT
-            </a>
-          )}
+
+          <div className="flip-section">
+            <span className="flip-section-label">TECH STACK</span>
+            <div className="flip-tech-list">
+              {p.tech.map(t => (
+                <div key={t} className="flip-tech-item">
+                  <span className="flip-tech-dot">▶</span>
+                  <span>{t}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="flip-section flip-links">
+            {p.href && <ProjLink href={p.href} variant="btn-primary">LIVE DEMO</ProjLink>}
+            {p.github && <ProjLink href={p.github} variant="btn-outline">GITHUB</ProjLink>}
+          </div>
+
           <span className="flip-hint">[ CLICK TO FLIP BACK ]</span>
         </div>
       </div>

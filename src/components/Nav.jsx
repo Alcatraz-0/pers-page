@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useActiveSection } from '../hooks/useActiveSection'
-import { playClick, playGameOver } from '../utils/sound'
+import { playClick, playGameOver, startAmbient, stopAmbient } from '../utils/sound'
 
-const NAV_IDS    = ['projects', 'skills', 'research', 'resume', 'contact']
-const NAV_LABELS = ['PROJECTS', 'SKILLS', 'RESEARCH', 'RESUME', 'CONTACT']
+const NAV_IDS    = ['now', 'projects', 'skills', 'research', 'resume', 'contact']
+const NAV_LABELS = ['NOW', 'PROJECTS', 'SKILLS', 'RESEARCH', 'RESUME', 'CONTACT']
 
 function W98Dialog({ onClose }) {
   return (
@@ -84,12 +84,42 @@ function ResumeBtn() {
   )
 }
 
+function useClock() {
+  const fmt = () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  const [time, setTime] = useState(fmt)
+  useEffect(() => {
+    const id = setInterval(() => setTime(prev => { const next = fmt(); return next === prev ? prev : next }), 30_000)
+    return () => clearInterval(id)
+  }, [])
+  return time
+}
+
 export default function Nav({ dark, setDark, palette, setPalette }) {
   const [menuOpen, setMenuOpen]     = useState(false)
   const [minimized, setMinimized]   = useState(false)
   const [showClose, setShowClose]   = useState(false)
   const [showHelp, setShowHelp]     = useState(false)
   const active = useActiveSection(NAV_IDS)
+  const time = useClock()
+
+  const [musicOn, setMusicOn] = useState(() => localStorage.getItem('ambient-music') === 'on')
+
+  useEffect(() => {
+    if (musicOn) startAmbient()
+    else stopAmbient()
+    localStorage.setItem('ambient-music', musicOn ? 'on' : 'off')
+  }, [musicOn])
+
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.hidden) stopAmbient()
+      else if (musicOn) startAmbient()
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+    return () => document.removeEventListener('visibilitychange', onVisibility)
+  }, [musicOn])
+
+  const handleMusic = () => { playClick(); setMusicOn(m => !m) }
 
   const handleMinimize = () => {
     playClick()
@@ -123,7 +153,13 @@ export default function Nav({ dark, setDark, palette, setPalette }) {
             <button className="w98-ctrl" onClick={handleMinimize} title={minimized ? 'Restore' : 'Minimize'}>
               {minimized ? '▲' : '_'}
             </button>
-            {/* Theme toggle — clearly labelled */}
+            <button
+              className={`w98-ctrl${musicOn ? ' w98-theme-ctrl' : ''}`}
+              onClick={handleMusic}
+              title={musicOn ? 'Stop Music' : 'Play Chiptune Music'}
+            >
+              {musicOn ? '♪' : '♩'}
+            </button>
             <button
               className="w98-ctrl w98-theme-ctrl"
               onClick={handleTheme}
@@ -171,9 +207,7 @@ export default function Nav({ dark, setDark, palette, setPalette }) {
               </div>
               <ResumeBtn />
               <div className="w98-tray">
-                <span className="w98-tray-time">
-                  {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+                <span className="w98-tray-time">{time}</span>
               </div>
               <button className="w98-hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
                 {menuOpen ? '✕' : '☰'}

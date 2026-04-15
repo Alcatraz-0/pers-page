@@ -78,9 +78,9 @@ function ContactIsland({ dark }) {
   return (
     <div className="contact-island">
       <div className="island-frame">
-        <img src={`${T}grass_platform_top_left_corner.png`}  alt="" className="island-corner" />
+        <img src={`${T}grass_platform_top_left_corner.png`}  alt="" className="island-corner" loading="lazy" decoding="async" />
         <div className="island-edge island-edge-top" />
-        <img src={`${T}grass_platform_top_right_corner.png`} alt="" className="island-corner" />
+        <img src={`${T}grass_platform_top_right_corner.png`} alt="" className="island-corner" loading="lazy" decoding="async" />
         <div className="island-edge island-edge-left" />
         <div className="island-interior">
           {CONTACT_ITEMS.map(item => {
@@ -99,9 +99,9 @@ function ContactIsland({ dark }) {
           })}
         </div>
         <div className="island-edge island-edge-right" />
-        <img src={`${T}grass_platform_bottom_left_corner.png`}  alt="" className="island-corner" />
+        <img src={`${T}grass_platform_bottom_left_corner.png`}  alt="" className="island-corner" loading="lazy" decoding="async" />
         <div className="island-edge island-edge-bottom" />
-        <img src={`${T}grass_platform_bottom_right_corner.png`} alt="" className="island-corner" />
+        <img src={`${T}grass_platform_bottom_right_corner.png`} alt="" className="island-corner" loading="lazy" decoding="async" />
       </div>
     </div>
   )

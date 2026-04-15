@@ -110,6 +110,9 @@ export default function Game2048({ onClose }) {
         setWon(true)
         addCoins(25)
         playSuccess()
+        window.dispatchEvent(new CustomEvent('achievement', {
+          detail: { id: 'grid-master', title: 'GRID MASTER', desc: 'Reached the 2048 tile!' }
+        }))
       }
       if (isGameOver(withNew)) {
         setOver(true)

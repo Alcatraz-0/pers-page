@@ -63,13 +63,14 @@ export default function QuizGame({ onClose }) {
     if (correct) { playSuccess(); setScore(s => s + 1) }
     else playGameOver()
 
+    // Award coins immediately per correct answer — avoids stale score state at game end
+    addCoins(correct ? COINS_PER_Q : 0)
+
     setTimeout(() => {
       if (idx + 1 < QUESTIONS.length) {
         setIdx(idx + 1)
         setSelected(null)
       } else {
-        const earned = (correct ? score + 1 : score) * COINS_PER_Q
-        addCoins(earned)
         setPhase('done')
       }
     }, 1100)

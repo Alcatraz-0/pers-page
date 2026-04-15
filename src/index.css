@@ -1139,13 +1139,14 @@ section {
 /* ── NOW ── */
 .now-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 1.5rem;
 }
 .now-card { display: flex; flex-direction: column; gap: 0.6rem; }
 .now-icon { font-size: 1.4rem; }
 .now-label { font-family: var(--pixel); font-size: 0.52rem; color: var(--c2); letter-spacing: 0.08em; }
 .now-value { font-size: 0.95rem; color: var(--ink); line-height: 1.5; }
+.now-detail { color: var(--muted); font-size: 0.6rem; margin-top: 0.2rem; line-height: 1.4; }
 
 /* ── DIVIDER ── */
 .divider { border: none; border-top: 2px solid var(--border); margin: 0 2rem; transition: border-color 0.3s; }
@@ -2495,13 +2496,37 @@ html.konami nav { border-bottom-color: transparent !important; }
   .footer-landscape { height: 420px; }
 }
 @media (max-width: 480px) {
-  .hero-name { font-size: 1.1rem; }
+  .hero-name { font-size: clamp(0.5rem, 3.5vw, 0.8rem); }
   .section-title { font-size: 0.8rem; }
   .btn { font-size: 0.58rem; padding: 10px 14px; }
   /* footer even more compact */
   .fl-ground-sprites { padding: 0 8px; gap: 0.35rem; }
   .fl-sprite { width: 44px; height: 44px; }
   .footer-landscape { height: 360px; }
+
+  /* Nav bar right section */
+  .w98-menubar-right { gap: 4px; }
+  .resume-dl-btn { font-size: 0.4rem; padding: 2px 4px; }
+
+  /* Coin display — stay on-screen at 320px */
+  .coin-display { right: 4px; font-size: 0.45rem; padding: 4px 6px; }
+
+  /* Achievement toasts */
+  .achievement-stack { max-width: min(300px, 90vw); right: 5vw; }
+  .achievement-toast { font-size: 0.45rem; padding: 8px 10px; }
+
+  /* Game launcher stack */
+  .game-launcher-stack {
+    flex-wrap: wrap;
+    max-width: 90vw;
+    right: 5vw;
+    bottom: 60px;
+    gap: 4px;
+  }
+  .snake-launcher { font-size: 0.4rem; padding: 4px 6px; }
+
+  /* XP bar */
+  .hire-xp-bar { padding: 4px 8px; font-size: 0.4rem; }
 }
 
 /* ══════════════════════════════════════════════
@@ -2874,6 +2899,160 @@ html.konami nav { border-bottom-color: transparent !important; }
   line-height: 1.6;
 }
 .rpg-log-line:first-child { color: #c8e0f0; }
+
+/* ── RPG SHOP ──────────────────────────────── */
+.rpg-shop {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: 100%;
+}
+.rpg-shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--pixel);
+  font-size: 0.62rem;
+  color: var(--c1);
+  border-bottom: 1px solid #1e3040;
+  padding-bottom: 0.4rem;
+}
+.rpg-shop-enemy {
+  font-size: 0.44rem;
+  color: var(--muted);
+}
+.rpg-shop-stats {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--c2);
+  letter-spacing: 0.04em;
+}
+.rpg-shop-section {
+  font-family: var(--pixel);
+  font-size: 0.44rem;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+  margin-top: 0.25rem;
+}
+.rpg-shop-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.rpg-shop-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #0a1520;
+  border: 1px solid #1e3040;
+  border-radius: 4px;
+  padding: 0.4rem 0.6rem;
+  transition: border-color 0.15s;
+}
+.rpg-shop-item:not(.dimmed):hover { border-color: var(--c1); }
+.rpg-shop-item.dimmed { opacity: 0.45; }
+.rpg-shop-icon { font-size: 1rem; flex-shrink: 0; }
+.rpg-shop-info { flex: 1; min-width: 0; }
+.rpg-shop-name {
+  font-family: var(--pixel);
+  font-size: 0.44rem;
+  color: #c8e0f0;
+  letter-spacing: 0.05em;
+}
+.rpg-shop-desc {
+  font-family: var(--pixel);
+  font-size: 0.36rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+.rpg-shop-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  flex-shrink: 0;
+}
+.rpg-shop-cost {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: #f4c542;
+}
+.rpg-shop-btn {
+  font-family: var(--pixel);
+  font-size: 0.38rem;
+  background: #0d1e2e;
+  border: 1px solid var(--c1);
+  color: var(--c1);
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  border-radius: 3px;
+  letter-spacing: 0.05em;
+  transition: background 0.15s;
+}
+.rpg-shop-btn:hover:not(:disabled) { background: #132d40; }
+.rpg-shop-btn:disabled { opacity: 0.4; cursor: not-allowed; border-color: #1e3040; color: var(--muted); }
+.rpg-shop-owned {
+  font-family: var(--pixel);
+  font-size: 0.38rem;
+  color: var(--c2);
+  letter-spacing: 0.05em;
+}
+/* ── BAG ─────────────────────────────────── */
+.rpg-bag-btn {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  background: #0a1520;
+  border: 1px solid #1e3040;
+  color: #c8e0f0;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  transition: border-color 0.15s;
+}
+.rpg-bag-btn:hover { border-color: var(--c1); }
+.rpg-bag-count {
+  background: var(--c1);
+  color: #000;
+  border-radius: 50%;
+  width: 1.1rem;
+  height: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.55rem;
+}
+.rpg-bag-panel {
+  background: #020a10;
+  border: 1px solid #1e3040;
+  border-radius: 4px;
+  padding: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.rpg-bag-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--pixel);
+  font-size: 0.38rem;
+  color: #c8e0f0;
+}
+.rpg-bag-row .rpg-shop-desc { margin-top: 0; flex: 1; }
+.rpg-bag-empty {
+  font-family: var(--pixel);
+  font-size: 0.38rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 0.4rem;
+}
 
 /* ══════════════════════════════════════════════
    PIXEL SPRITES — BASE

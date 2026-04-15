@@ -1,10 +1,5 @@
 import { useScrollReveal } from '../hooks/useScrollReveal'
-
-const NOW_ITEMS = [
-  { icon: '⚙', label: 'CURRENTLY BUILDING', value: 'AI inference pipeline on multi-cloud GPU infra (Oplexa)' },
-  { icon: '📖', label: 'CURRENTLY LEARNING',  value: 'FPGA HLS4ML optimization + Rust systems programming' },
-  { icon: '🔖', label: 'CURRENTLY READING',   value: 'Designing Data-Intensive Applications — Kleppmann' },
-]
+import { NOW_ITEMS } from '../data'
 
 export default function Now() {
   const [ref, visible] = useScrollReveal()
@@ -18,6 +13,7 @@ export default function Now() {
             <span className="now-icon">{item.icon}</span>
             <p className="now-label">{item.label}</p>
             <p className="now-value">{item.value}</p>
+            <p className="now-detail">{item.detail}</p>
           </div>
         ))}
       </div>

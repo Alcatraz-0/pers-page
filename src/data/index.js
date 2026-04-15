@@ -190,3 +190,30 @@ export const CONTACT_ITEMS = [
   { icon: '</>', label: 'GITHUB', value: 'github.com/Alcatraz-0', href: 'https://github.com/Alcatraz-0' },
   { icon: '◎', label: 'LOCATION', value: 'Chicago, IL, USA', href: null },
 ]
+
+export const NOW_ITEMS = [
+  {
+    icon: '⚙',
+    label: 'BUILDING',
+    value: 'ML Qubit State Reconstruction',
+    detail: 'UIC SAMPL Lab · FPGA / HLS4ML pipeline',
+  },
+  {
+    icon: '📖',
+    label: 'LEARNING',
+    value: 'Hardware-Aware Neural Networks',
+    detail: 'HLS4ML synthesis + FPGA deployment',
+  },
+  {
+    icon: '📄',
+    label: 'READING',
+    value: '"Attention Is All You Need"',
+    detail: 'Transformer architecture deep-dive',
+  },
+  {
+    icon: '🚀',
+    label: 'SHIPPED',
+    value: 'Multimodal RAG for SEC 10-K',
+    detail: '85% Table Recall@5 · LLaMA 3.2 · FAISS',
+  },
+]

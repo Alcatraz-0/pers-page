@@ -52,6 +52,13 @@ export default function WhackABug({ active }) {
     const t = setTimeout(() => setSquashed(prev => prev.filter(s => s.id !== id)), 600)
     splatsRef.current.push(t)
     removeBug(id)
+    const total = Number(localStorage.getItem('wab-total-bugs') || 0) + 1
+    localStorage.setItem('wab-total-bugs', total)
+    if (total === 10) {
+      window.dispatchEvent(new CustomEvent('achievement', {
+        detail: { id: 'bug-slayer', title: 'BUG SLAYER', desc: '10 bugs squashed total!' }
+      }))
+    }
   }, [removeBug])
 
   // Spawn loop

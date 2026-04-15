@@ -1,17 +1,48 @@
 import { useEffect, useRef, useState } from 'react'
+import { getCoins } from '../utils/coins'
+
+const TIPS = [
+  'Try the Konami code (↑↑↓↓←→←→BA) for 50 free coins!',
+  'Click the coffee cup in the footer for 5 coins.',
+  'The RPG shop lets you spend coins on permanent upgrades.',
+  'Unlock palettes in ☆ SHOP — synthwave costs 50 coins.',
+  'Scroll to 100% XP in the bottom bar to see the HIRE ME prompt.',
+  'Press ESC to close any game.',
+  "Try 'help' to see all commands.",
+  'The library backdrop in Research section uses 18 pixel sprites.',
+]
+
+const ACHIEVEMENTS = [
+  { id: 'projects',        label: 'CODE ARCHAEOLOGIST — Unearthed 6 projects' },
+  { id: 'skills',          label: 'SKILL TREE MAXED — Full stack detected' },
+  { id: 'research',        label: 'SCHOLAR DETECTED — Research section explored' },
+  { id: 'resume',          label: 'LORE UNLOCKED — Resume downloaded' },
+  { id: 'contact',         label: 'FINAL BOSS REACHED — Contact section opened' },
+  { id: 'penny-collector', label: 'PENNY COLLECTOR — First coins earned' },
+  { id: 'coin-hoarder',    label: 'COIN HOARDER — 100 coins stashed' },
+  { id: 'coin-king',       label: 'COIN KING — 500 coins collected' },
+  { id: 'snake-charmer',   label: 'SNAKE CHARMER — Snake high score reached' },
+  { id: 'grid-master',     label: 'GRID MASTER — 2048 tile achieved' },
+  { id: 'bug-slayer',      label: 'BUG SLAYER — Whack-a-Bug champion' },
+]
 
 const COMMANDS = {
   help: () => [
     { text: 'AVAILABLE COMMANDS:', cls: 'c2' },
-    { text: '  about      who is Anand?' },
-    { text: '  skills     tech stack breakdown' },
-    { text: '  projects   what has been built' },
-    { text: '  research   published & ongoing work' },
-    { text: '  contact    how to reach me' },
-    { text: '  whoami     ??' },
-    { text: '  clear      clear the terminal' },
-    { text: '  exit       close this window' },
-    { text: '  ...        there may be other commands', cls: 'muted' },
+    { text: '  about        who is Anand?' },
+    { text: '  skills       tech stack breakdown' },
+    { text: '  projects     what has been built' },
+    { text: '  research     published & ongoing work' },
+    { text: '  contact      how to reach me' },
+    { text: '  whoami       ??' },
+    { text: '  coins        check your coin balance' },
+    { text: '  shop         browse the palette shop' },
+    { text: '  scores       view game high scores' },
+    { text: '  achievements see unlocked achievements' },
+    { text: '  tip          get a random tip' },
+    { text: '  clear        clear the terminal' },
+    { text: '  exit         close this window' },
+    { text: '  ...          there may be other commands', cls: 'muted' },
   ],
   about: () => [
     { text: 'ANAND MEENA', cls: 'c1' },
@@ -90,6 +121,55 @@ const COMMANDS = {
   clear: () => '__CLEAR__',
   exit:  () => '__EXIT__',
   close: () => '__EXIT__',
+  coins: () => {
+    const bal = getCoins()
+    return [
+      { text: `★ BALANCE: ${bal} COINS`, cls: 'c1' },
+      { text: 'Earn more: Snake (score×2), Quiz (15/correct), RPG (up to 130), 2048 (1/merge), Breakout (1/brick)...' },
+      { text: 'Spend: open ☆ SHOP or ⚔ RPG for items', cls: 'muted' },
+    ]
+  },
+  shop: () => [
+    { text: 'PALETTE SHOP:', cls: 'c2' },
+    { text: '  synthwave  — 50 ★' },
+    { text: '  aurora     — 50 ★' },
+    { text: '  ember      — 50 ★' },
+    { text: '  neon       — 50 ★' },
+    { text: '  teal       — 50 ★' },
+    { text: 'UPGRADES:', cls: 'c2' },
+    { text: '  Rainbow Cursor — 100 ★' },
+    { text: '  VIP Badge      — 25 ★' },
+    { text: '> Click ☆ SHOP button (bottom-right) to purchase', cls: 'muted' },
+  ],
+  scores: () => {
+    const get = (key) => localStorage.getItem(key)
+    const fmt = (val, suffix) => val !== null ? `${val} ${suffix}` : '---'
+    return [
+      { text: 'HIGH SCORES', cls: 'c2' },
+      { text: `  Snake:       ${fmt(get('snake-best'), 'pts')}` },
+      { text: `  2048:        ${fmt(get('game2048-best'), 'tile')}` },
+      { text: `  Breakout:    ${fmt(get('breakout-best'), 'pts')}` },
+      { text: `  Invaders:    ${fmt(get('invaders-best'), 'pts')}` },
+      { text: `  Quiz:        ${fmt(get('quiz-best'), '/8 correct')}` },
+      { text: `  RPG:         ${fmt(get('rpg-best'), 'coins earned')}` },
+      { text: `  Code Typer:  ${fmt(get('ctyper-best'), 'wpm')}` },
+      { text: `  Whack-a-Bug: ${fmt(get('wab-best'), 'bugs')}` },
+    ]
+  },
+  achievements: () => {
+    const seen = new Set(JSON.parse(localStorage.getItem('seen-achievements') || '[]'))
+    return [
+      { text: 'ACHIEVEMENTS', cls: 'c2' },
+      ...ACHIEVEMENTS.map(({ id, label }) => {
+        const unlocked = seen.has(id)
+        return { text: `  [${unlocked ? '✓' : '✗'}] ${label}`, cls: unlocked ? 'ok' : 'muted' }
+      }),
+    ]
+  },
+  tip: () => [
+    { text: 'TIP:', cls: 'c2' },
+    { text: `  ${TIPS[Math.floor(Math.random() * TIPS.length)]}` },
+  ],
 }
 
 export default function Terminal({ onClose }) {

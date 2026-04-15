@@ -25,6 +25,7 @@ export default function SnakeGame({ onClose }) {
   const canvasRef = useRef(null)
   const gameRef = useRef(initState())
   const loopRef = useRef(null)
+  const coinsPaidRef = useRef(false)
   const [score, setScore] = useState(0)
   const [best, setBest] = useState(() => Number(localStorage.getItem('snake-best') || 0))
   const [phase, setPhase] = useState('idle') // idle | running | dead
@@ -57,6 +58,16 @@ export default function SnakeGame({ onClose }) {
     })
   }, [])
 
+  const endGame = useCallback((score) => {
+    const newBest = Math.max(score, best)
+    setBest(newBest)
+    localStorage.setItem('snake-best', String(newBest))
+    if (score > 0) addCoins(score * 2)
+    if (score > 5) window.dispatchEvent(new CustomEvent('achievement', {
+      detail: { id: 'snake-charmer', title: 'SNAKE CHARMER', desc: 'Score > 5 in Snake' }
+    }))
+  }, [best])
+
   const tick = useCallback(() => {
     const g = gameRef.current
     if (g.state !== 'running') return
@@ -64,24 +75,12 @@ export default function SnakeGame({ onClose }) {
     g.dir = g.nextDir
     const head = { x: g.snake[0].x + g.dir.x, y: g.snake[0].y + g.dir.y }
 
-    // Wall collision
-    if (head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS) {
+    const wallHit = head.x < 0 || head.x >= COLS || head.y < 0 || head.y >= ROWS
+    const selfHit = g.snake.some(s => s.x === head.x && s.y === head.y)
+    if (wallHit || selfHit) {
       g.state = 'dead'
       setPhase('dead')
-      const newBest = Math.max(g.score, best)
-      setBest(newBest)
-      localStorage.setItem('snake-best', String(newBest))
-      if (g.score > 0) addCoins(g.score * 2)
-      return
-    }
-    // Self collision
-    if (g.snake.some(s => s.x === head.x && s.y === head.y)) {
-      g.state = 'dead'
-      setPhase('dead')
-      const newBest = Math.max(g.score, best)
-      setBest(newBest)
-      localStorage.setItem('snake-best', String(newBest))
-      if (g.score > 0) addCoins(g.score * 2)
+      endGame(g.score)
       return
     }
 
@@ -93,7 +92,7 @@ export default function SnakeGame({ onClose }) {
       g.food = randPos(g.snake)
       setScore(g.score)
     }
-  }, [best])
+  }, [endGame])
 
   const startGame = () => {
     const s = initState()

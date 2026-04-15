@@ -1,43 +1,66 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 const POOL_SIZE = 20
 const DURATION  = 500 // ms
 
 export default function CursorSparkle() {
-  const poolRef  = useRef([])
-  const indexRef = useRef(0)
-
   useEffect(() => {
-    const nodes = []
+    // Skip entirely on touch / coarse-pointer devices
+    if (window.matchMedia('(pointer: coarse)').matches) return
+
+    const rainbow = localStorage.getItem('cursor-rainbow') === '1'
+
+    const pool = []
     for (let i = 0; i < POOL_SIZE; i++) {
       const el = document.createElement('div')
       el.style.cssText =
-        'position:fixed;pointer-events:none;z-index:9999;width:4px;height:4px;' +
+        'position:fixed;top:0;left:0;pointer-events:none;z-index:9999;width:4px;height:4px;' +
         'border-radius:1px;opacity:0;will-change:transform,opacity'
       document.body.appendChild(el)
-      nodes.push(el)
+      pool.push(el)
     }
-    poolRef.current = nodes
+
+    // Mutated in-place — avoids object allocation on every mousemove / spawn
+    const latest   = { x: 0, y: 0 }
+    const lastSpawn = { x: -999, y: -999 }
+    let poolIdx = 0
 
     const onMove = (e) => {
-      const el = poolRef.current[indexRef.current % POOL_SIZE]
-      indexRef.current++
+      latest.x = e.clientX
+      latest.y = e.clientY
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
 
-      // Setting animation to 'none' then forcing a reflow is the standard
-      // trick to restart a CSS animation on an element that may already be running it.
+    function spawnParticle(x, y) {
+      const el = pool[poolIdx % POOL_SIZE]
+      poolIdx++
       el.style.animation  = 'none'
-      el.style.left       = `${e.clientX - 2}px`
-      el.style.top        = `${e.clientY - 2}px`
-      el.style.background = indexRef.current % 2 === 0 ? 'var(--c1)' : 'var(--c2)'
+      el.style.transform  = `translate(${x - 2}px, ${y - 2}px)`
+      el.style.background = poolIdx % 2 === 0 ? 'var(--c1)' : 'var(--c2)'
       void el.offsetWidth
       el.style.animation  = `sparkle-drift ${DURATION}ms ease forwards`
     }
 
-    window.addEventListener('mousemove', onMove, { passive: true })
+    let rafId
+    function loop() {
+      const { x, y } = latest
+      const dx = x - lastSpawn.x, dy = y - lastSpawn.y
+
+      if (dx * dx + dy * dy > 4) { // moved more than 2px since last spawn
+        spawnParticle(x, y)
+        if (rainbow) spawnParticle(x, y)
+        lastSpawn.x = x
+        lastSpawn.y = y
+      }
+
+      rafId = requestAnimationFrame(loop)
+    }
+    rafId = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
-      nodes.forEach(el => el.remove())
+      cancelAnimationFrame(rafId)
+      pool.forEach(el => el.remove())
     }
   }, [])
 

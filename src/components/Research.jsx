@@ -4,8 +4,6 @@ import { RESEARCH } from '../data/index'
 const S = '/sprites/'
 const L = '/scenes/library/'
 
-// Library sprites to use as background tiles — pick varied items
-// Scattered positions [top%, left%] for each library tile
 const LIB_POSITIONS = [
   [2,2],[2,14],[2,28],[2,72],[2,86],[2,96],
   [30,0],[30,92],[30,98],
@@ -19,29 +17,28 @@ export default function Research() {
   return (
     <section id="research" ref={ref} className={`section-reveal${visible ? ' visible' : ''}`} style={{ position: 'relative', overflow: 'hidden' }}>
 
-      {/* ── Library backdrop — scattered scene sprites, very faded ── */}
       <div className="scene-bg research-lib-bg" aria-hidden="true">
         {LIB_POSITIONS.map(([top, left], i) => (
           <img key={i}
                src={`${L}Classroom_and_Library_Singles_48x48_${(i % 18) + 1}.png`}
                alt="" className="lib-tile"
-               style={{ top: `${top}%`, left: `${left}%` }} />
+               style={{ top: `${top}%`, left: `${left}%` }}
+               loading="lazy" decoding="async" />
         ))}
       </div>
 
       <p className="section-label">// RESEARCH LOG</p>
       <h2 className="section-title">RESEARCH</h2>
 
-      {/* Ambient research lab sprites */}
       <div className="research-deco-row" aria-hidden="true">
-        <img src={`${S}animated_control_room_screens_48x48.gif`}          className="px-sprite px-sprite-lg" alt="" title="Data dashboards" />
-        <img src={`${S}animated_control_room_server_48x48.gif`}           className="px-sprite px-sprite-lg" alt="" title="HPC cluster" />
-        <img src={`${S}animated_old_tv_48x48.gif`}                        className="px-sprite px-sprite-lg" alt="" title="Terminal" />
-        <img src={`${S}animated_museum_laser_front_48x48.gif`}            className="px-sprite px-sprite-lg" alt="" title="Laser precision" />
-        <img src={`${S}animated_coffee_48x48.gif`}                        className="px-sprite px-sprite-lg" alt="" title="Researcher fuel" />
-        <img src={`${S}animated_spell_book_48x48.gif`}                    className="px-sprite px-sprite-lg" alt="" title="Research papers" />
-        <img src={`${S}animated_TV_reportage_48x48.gif`}                  className="px-sprite px-sprite-lg" alt="" title="Publication" />
-        <img src={`${S}animated_control_room_facebook_scrolling_48x48.gif`} className="px-sprite px-sprite-lg" alt="" title="Data feed" />
+        <img src={`${S}animated_control_room_screens_48x48.gif`}          className="px-sprite px-sprite-lg" alt="" title="Data dashboards" loading="lazy" decoding="async" />
+        <img src={`${S}animated_control_room_server_48x48.gif`}           className="px-sprite px-sprite-lg" alt="" title="HPC cluster" loading="lazy" decoding="async" />
+        <img src={`${S}animated_old_tv_48x48.gif`}                        className="px-sprite px-sprite-lg" alt="" title="Terminal" loading="lazy" decoding="async" />
+        <img src={`${S}animated_museum_laser_front_48x48.gif`}            className="px-sprite px-sprite-lg" alt="" title="Laser precision" loading="lazy" decoding="async" />
+        <img src={`${S}animated_coffee_48x48.gif`}                        className="px-sprite px-sprite-lg" alt="" title="Researcher fuel" loading="lazy" decoding="async" />
+        <img src={`${S}animated_spell_book_48x48.gif`}                    className="px-sprite px-sprite-lg" alt="" title="Research papers" loading="lazy" decoding="async" />
+        <img src={`${S}animated_TV_reportage_48x48.gif`}                  className="px-sprite px-sprite-lg" alt="" title="Publication" loading="lazy" decoding="async" />
+        <img src={`${S}animated_control_room_facebook_scrolling_48x48.gif`} className="px-sprite px-sprite-lg" alt="" title="Data feed" loading="lazy" decoding="async" />
       </div>
 
       <div className="research-grid">

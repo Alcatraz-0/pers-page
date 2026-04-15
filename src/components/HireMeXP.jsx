@@ -10,7 +10,7 @@ export default function HireMeXP() {
     const scrollXP = Math.min(40, Math.round(
       (window.scrollY / Math.max(1, document.body.scrollHeight - window.innerHeight)) * 40
     ))
-    const coinXP = Math.min(40, Math.floor(getCoins() / 10) * 10)
+    const coinXP = Math.max(0, Math.min(40, Math.floor(Math.max(0, getCoins()) / 10) * 10))
     const sectionXP = Math.min(20, sectionsVisited.current.size * 4)
     return Math.min(100, scrollXP + coinXP + sectionXP)
   }

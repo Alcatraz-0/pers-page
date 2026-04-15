@@ -4,7 +4,7 @@ const SPARKLE_COLORS = ['#00e5cc', '#ffe066', '#ff6eaf', '#88ff88', '#a0c4ff']
 
 export default function Cursor() {
   useEffect(() => {
-    if (window.matchMedia('(hover: none)').matches) return
+    if (window.matchMedia('(hover: none), (pointer: coarse)').matches) return
 
     document.body.classList.add('custom-cursor')
 

@@ -13,7 +13,7 @@ const CONF_POSITIONS = [
 function TimelineItem({ date, org, role, bullets, icon }) {
   return (
     <div className="timeline-item">
-      <img src={icon} className="tl-sprite px-sprite" alt="" />
+      <img src={icon} className="tl-sprite px-sprite" alt="" loading="lazy" decoding="async" />
       <div className="tl-content">
         <span className="timeline-date">{date}</span>
         <p className="timeline-org">{org}</p>
@@ -50,7 +50,7 @@ export default function Timeline() {
             src={`${L}Conference_Hall_Singles_48x48_${i + 1}.png`}
             className="conf-tile"
             style={{ top: `${top}%`, left: `${left}%` }}
-            loading="lazy"
+            loading="lazy" decoding="async"
             alt=""
           />
         ))}
@@ -60,18 +60,17 @@ export default function Timeline() {
       <h2 className="section-title">RESUME</h2>
 
       <div className="timeline-layout">
-        {/* Escalator progress bar on the side */}
         <div className="tl-escalator">
-          <img src={`${S}animated_escalator_up_48x48.gif`} className="px-sprite" alt="" />
+          <img src={`${S}animated_escalator_up_48x48.gif`} className="px-sprite" alt="" loading="lazy" decoding="async" />
           <div className="tl-progress-track">
             <div className="tl-progress-fill" />
           </div>
-          <img src={`${S}animated_sprout_48x48.gif`} className="px-sprite" alt="" />
+          <img src={`${S}animated_sprout_48x48.gif`} className="px-sprite" alt="" loading="lazy" decoding="async" />
         </div>
 
         <div className="timeline">
           <h3 className="timeline-section-head">
-            <img src={`${S}animated_spell_book_48x48.gif`} className="px-sprite section-head-icon" alt="" />
+            <img src={`${S}animated_spell_book_48x48.gif`} className="px-sprite section-head-icon" alt="" loading="lazy" decoding="async" />
             EDUCATION
           </h3>
           {EDUCATION.map((e, i) => (
@@ -79,7 +78,7 @@ export default function Timeline() {
           ))}
 
           <h3 className="timeline-section-head" style={{ marginTop: '2rem' }}>
-            <img src={`${S}animated_control_room_server_48x48.gif`} className="px-sprite section-head-icon" alt="" />
+            <img src={`${S}animated_control_room_server_48x48.gif`} className="px-sprite section-head-icon" alt="" loading="lazy" decoding="async" />
             EXPERIENCE
           </h3>
           {EXPERIENCE.map((e, i) => (

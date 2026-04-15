@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import Nav from './components/Nav'
 import Hero from './components/Hero'
 import Projects from './components/Projects'
@@ -15,20 +15,23 @@ import ScrollProgress from './components/ScrollProgress'
 import Cursor from './components/Cursor'
 import CursorSparkle from './components/CursorSparkle'
 import ScrollWalker from './components/ScrollWalker'
-import WhackABug from './components/WhackABug'
-import SnakeGame from './components/SnakeGame'
-import Game2048 from './components/Game2048'
-import BreakoutGame from './components/BreakoutGame'
-import SpaceInvaders from './components/SpaceInvaders'
-import QuizGame from './components/QuizGame'
-import Guestbook from './components/Guestbook'
-import RpgGame from './components/RpgGame'
-import CodeTyper from './components/CodeTyper'
 import PlayerStats from './components/PlayerStats'
 import CoinDisplay from './components/CoinDisplay'
 import HireMeXP from './components/HireMeXP'
 import { useKonami } from './hooks/useKonami'
 import { addCoins } from './utils/coins'
+
+const WhackABug = lazy(() => import('./components/WhackABug'))
+const SnakeGame = lazy(() => import('./components/SnakeGame'))
+const Game2048 = lazy(() => import('./components/Game2048'))
+const BreakoutGame = lazy(() => import('./components/BreakoutGame'))
+const SpaceInvaders = lazy(() => import('./components/SpaceInvaders'))
+const QuizGame = lazy(() => import('./components/QuizGame'))
+const Guestbook = lazy(() => import('./components/Guestbook'))
+const RpgGame = lazy(() => import('./components/RpgGame'))
+const CodeTyper = lazy(() => import('./components/CodeTyper'))
+const Leaderboard = lazy(() => import('./components/Leaderboard'))
+const CoinShop    = lazy(() => import('./components/CoinShop'))
 
 export default function App() {
   const [dark, setDark] = useState(() => localStorage.getItem('theme') === 'dark')
@@ -49,6 +52,8 @@ export default function App() {
   const [rpgOpen, setRpgOpen]     = useState(false)
   const [wabActive, setWabActive] = useState(false)
   const [guestOpen, setGuestOpen] = useState(false)
+  const [scoresOpen, setScoresOpen] = useState(false)
+  const [shopOpen, setShopOpen]     = useState(false)
   const [konamiOn, setKonamiOn]   = useState(false)
   const [transitioning, setTransitioning] = useState(false)
 
@@ -81,7 +86,6 @@ export default function App() {
     document.documentElement.setAttribute('data-palette', palette)
   }, [palette])
 
-  // First-visit coin gift
   useEffect(() => {
     if (!localStorage.getItem('first-visit-gift')) {
       localStorage.setItem('first-visit-gift', 'true')
@@ -112,6 +116,8 @@ export default function App() {
         setBreakoutOpen(false)
         setInvadersOpen(false)
         setTyperOpen(false)
+        setScoresOpen(false)
+        setShopOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)
@@ -149,7 +155,9 @@ export default function App() {
         <Footer />
       </div>
 
-      <WhackABug active={wabActive} />
+      <Suspense fallback={null}>
+        <WhackABug active={wabActive} />
+      </Suspense>
       <AchievementToast />
 
       <CoinDisplay />
@@ -164,14 +172,18 @@ export default function App() {
       </button>
 
       {/* Games */}
-      {snakeOpen    && <SnakeGame     onClose={() => setSnakeOpen(false)}    />}
-      {quizOpen     && <QuizGame      onClose={() => setQuizOpen(false)}     />}
-      {rpgOpen      && <RpgGame       onClose={() => setRpgOpen(false)}      />}
-      {guestOpen    && <Guestbook     onClose={() => setGuestOpen(false)}    />}
-      {game2048Open && <Game2048      onClose={() => setGame2048Open(false)} />}
-      {breakoutOpen && <BreakoutGame onClose={() => setBreakoutOpen(false)} />}
-      {invadersOpen && <SpaceInvaders onClose={() => setInvadersOpen(false)} />}
-      {typerOpen    && <CodeTyper     onClose={() => setTyperOpen(false)}    />}
+      <Suspense fallback={null}>
+        {snakeOpen    && <SnakeGame     onClose={() => setSnakeOpen(false)}    />}
+        {quizOpen     && <QuizGame      onClose={() => setQuizOpen(false)}     />}
+        {rpgOpen      && <RpgGame       onClose={() => setRpgOpen(false)}      />}
+        {guestOpen    && <Guestbook     onClose={() => setGuestOpen(false)}    />}
+        {game2048Open && <Game2048      onClose={() => setGame2048Open(false)} />}
+        {breakoutOpen && <BreakoutGame  onClose={() => setBreakoutOpen(false)} />}
+        {invadersOpen && <SpaceInvaders onClose={() => setInvadersOpen(false)} />}
+        {typerOpen    && <CodeTyper     onClose={() => setTyperOpen(false)}    />}
+        {scoresOpen   && <Leaderboard   onClose={() => setScoresOpen(false)}   />}
+        {shopOpen     && <CoinShop      onClose={() => setShopOpen(false)}     />}
+      </Suspense>
 
       <HireMeXP />
 
@@ -202,6 +214,8 @@ export default function App() {
         <button className="snake-launcher" onClick={() => setBreakoutOpen(true)}>▦ BREAK</button>
         <button className="snake-launcher" onClick={() => setTyperOpen(true)}>⌨ TYPE</button>
         <button className="snake-launcher" onClick={() => setInvadersOpen(true)}>👾 INVADE</button>
+        <button className="snake-launcher" onClick={() => setScoresOpen(true)}>⬛ SCORES</button>
+        <button className="snake-launcher" onClick={() => setShopOpen(true)}>☆ SHOP</button>
       </div>
     </>
   )

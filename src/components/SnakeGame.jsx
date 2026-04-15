@@ -62,7 +62,10 @@ export default function SnakeGame({ onClose }) {
     const newBest = Math.max(score, best)
     setBest(newBest)
     localStorage.setItem('snake-best', String(newBest))
-    if (score > 0) addCoins(score * 2)
+    if (score > 0 && !coinsPaidRef.current) {
+      coinsPaidRef.current = true
+      addCoins(score * 2)
+    }
     if (score > 5) window.dispatchEvent(new CustomEvent('achievement', {
       detail: { id: 'snake-charmer', title: 'SNAKE CHARMER', desc: 'Score > 5 in Snake' }
     }))
@@ -99,6 +102,7 @@ export default function SnakeGame({ onClose }) {
     s.food = randPos(s.snake)
     s.state = 'running'
     gameRef.current = s
+    coinsPaidRef.current = false
     setScore(0)
     setPhase('running')
   }

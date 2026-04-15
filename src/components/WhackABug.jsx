@@ -61,6 +61,14 @@ export default function WhackABug({ active }) {
     }
   }, [removeBug])
 
+  // Save best session score when deactivated
+  useEffect(() => {
+    if (!active && score > 0) {
+      const prev = Number(localStorage.getItem('wab-best') || 0)
+      if (score > prev) localStorage.setItem('wab-best', score)
+    }
+  }, [active, score])
+
   // Spawn loop
   useEffect(() => {
     if (!active) { setBugs([]); return }

@@ -1,6 +1,75 @@
 import { useState, useEffect } from 'react'
 import { useActiveSection } from '../hooks/useActiveSection'
 import { playClick, playGameOver, startAmbient, stopAmbient } from '../utils/sound'
+import { getUnlockedPalettes } from '../utils/coins'
+
+const FREE_PALETTES   = ['hacker', 'arcade', 'cartridge', 'cyberpunk', 'moody', 'ocean', 'seafoam']
+const LOCKED_PALETTES = ['synthwave', 'aurora', 'ember', 'neon', 'teal']
+const ALL_PALETTES    = [...FREE_PALETTES, ...LOCKED_PALETTES]
+const PALETTE_COLORS  = {
+  hacker:    ['#2563eb', '#16a34a'],
+  arcade:    ['#2563eb', '#dc2626'],
+  cartridge: ['#16a34a', '#ca8a04'],
+  cyberpunk: ['#ca8a04', '#9333ea'],
+  moody:     ['#9333ea', '#ec4899'],
+  ocean:     ['#0ea5e9', '#2563eb'],
+  seafoam:   ['#0d9488', '#0ea5e9'],
+  synthwave: ['#ec4899', '#9333ea'],
+  aurora:    ['#a78bfa', '#0d9488'],
+  ember:     ['#fb923c', '#dc2626'],
+  neon:      ['#f97316', '#ca8a04'],
+  teal:      ['#0d9488', '#2563eb'],
+}
+
+function PalettePicker({ palette, setPalette }) {
+  const [unlocked, setUnlocked] = useState(getUnlockedPalettes)
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    const refresh = () => setUnlocked(getUnlockedPalettes())
+    window.addEventListener('palette-unlocked', refresh)
+    return () => window.removeEventListener('palette-unlocked', refresh)
+  }, [])
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <button
+        className="w98-ctrl"
+        title="Change palette"
+        onClick={() => { playClick(); setOpen(o => !o) }}
+        style={{ fontSize: '0.5rem', padding: '2px 4px' }}
+      >🎨</button>
+      {open && (
+        <div style={{
+          position: 'absolute', top: '100%', right: 0, zIndex: 200,
+          background: 'var(--bg)', border: '2px solid var(--border)',
+          boxShadow: '2px 2px 0 var(--shadow)', padding: '4px',
+          display: 'flex', flexWrap: 'wrap', gap: '3px', width: '120px',
+        }}>
+          {ALL_PALETTES.map(id => {
+            const isLocked = LOCKED_PALETTES.includes(id) && !unlocked.includes(id)
+            const [c1, c2] = PALETTE_COLORS[id] || ['#888', '#aaa']
+            return (
+              <button
+                key={id}
+                title={isLocked ? `${id} — 🔒 50★` : id}
+                disabled={isLocked}
+                onClick={() => { if (!isLocked) { setPalette(id); playClick(); setOpen(false) } }}
+                style={{
+                  width: 18, height: 18, border: palette === id ? '2px solid var(--ink)' : '1px solid var(--border)',
+                  background: `linear-gradient(135deg, ${c1} 50%, ${c2} 50%)`,
+                  cursor: isLocked ? 'not-allowed' : 'pointer',
+                  opacity: isLocked ? 0.4 : 1,
+                  padding: 0,
+                }}
+              />
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
 
 const NAV_IDS    = ['now', 'projects', 'skills', 'research', 'resume', 'contact']
 const NAV_LABELS = ['NOW', 'PROJECTS', 'SKILLS', 'RESEARCH', 'RESUME', 'CONTACT']
@@ -201,6 +270,7 @@ export default function Nav({ dark, setDark, palette, setPalette }) {
             </div>
 
             <div className="w98-menubar-right">
+              <PalettePicker palette={palette} setPalette={setPalette} />
               <div className="avail-badge">
                 <span className="avail-dot" />
                 <span className="avail-label">OPEN TO WORK</span>

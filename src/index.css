@@ -111,10 +111,6 @@ body {
   text-overflow: ellipsis;
   letter-spacing: 0.03em;
 }
-.w98-title-path {
-  opacity: 0.75;
-}
-
 /* Window control buttons */
 .w98-controls {
   display: flex;
@@ -429,17 +425,6 @@ body {
 .palette-swatch.active { border-color: var(--ink); }
 .swatch-half { flex: 1; height: 100%; }
 
-.nav-toggle {
-  display: none;
-  background: none;
-  border: 2px solid var(--ink);
-  padding: 4px 8px;
-  font-family: var(--pixel);
-  font-size: 0.68rem;
-  cursor: pointer;
-  color: var(--ink);
-}
-
 /* ── SECTIONS ── */
 section {
   padding: 5rem 2rem;
@@ -611,26 +596,6 @@ section {
   z-index: 5;
 }
 
-/* Scanlines — dark mode only */
-.scanlines {
-  display: none;
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 3;
-}
-[data-theme="dark"] .scanlines {
-  display: block;
-  background: repeating-linear-gradient(
-    to bottom,
-    transparent 0px,
-    transparent 3px,
-    rgba(0, 0, 0, 0.09) 3px,
-    rgba(0, 0, 0, 0.09) 4px
-  );
-}
-
-
 .hero-eyebrow {
   font-family: var(--pixel);
   font-size: 0.68rem;
@@ -797,6 +762,7 @@ section {
   box-shadow: 3px 3px 0 var(--shadow); padding: 4px 8px;
   font-family: var(--pixel); font-size: 0.4rem; color: var(--ink);
   white-space: nowrap; animation: bubble-pop 0.3s ease; pointer-events: none; z-index: 1;
+  will-change: transform, opacity;
 }
 .walker-bubble::after {
   content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%);
@@ -1840,6 +1806,7 @@ a.island-card:hover {
   flex-direction: column;
   gap: 0.6rem;
   pointer-events: none;
+  contain: layout;
 }
 .achievement-toast {
   background: var(--card-bg);
@@ -2258,68 +2225,6 @@ html.konami nav { border-bottom-color: transparent !important; }
 .skt-star { font-size: 0.84rem; color: var(--border); }
 .skt-star.filled { color: var(--c2); }
 
-/* ── GitHub stats ── */
-.github-stats {
-  padding: 4rem 3rem;
-  border-top: 1px solid var(--border);
-}
-.gh-cards {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin: 2rem 0;
-}
-.gh-stat-card {
-  flex: 1;
-  min-width: 120px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  padding: 1.25rem;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  transition: border-color 0.2s;
-}
-.gh-stat-card:hover { border-color: var(--c1); }
-.gh-stat-value {
-  font-family: var(--pixel);
-  font-size: 1rem;
-  color: var(--c1);
-}
-.gh-stat-label {
-  font-family: var(--pixel);
-  font-size: 0.52rem;
-  color: var(--muted);
-  letter-spacing: 0.1em;
-}
-.gh-err, .gh-loading {
-  font-family: var(--pixel);
-  font-size: 0.62rem;
-  color: var(--muted);
-}
-.gh-repos {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.gh-repo-card {
-  flex: 1;
-  min-width: 160px;
-  border: 1px solid var(--border);
-  background: var(--card-bg);
-  padding: 1rem;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  transition: border-color 0.15s, transform 0.15s;
-}
-.gh-repo-card:hover { border-color: var(--c1); transform: translateY(-3px); }
-.gh-repo-name { font-family: var(--pixel); font-size: 0.58rem; color: var(--c1); }
-.gh-repo-lang { font-family: var(--pixel); font-size: 0.34rem; color: var(--c2); }
-.gh-repo-stars { font-family: var(--pixel); font-size: 0.34rem; color: var(--muted); }
-
 /* ── Snake game ── */
 .snake-overlay {
   position: fixed;
@@ -2540,6 +2445,7 @@ html.konami nav { border-bottom-color: transparent !important; }
   flex-direction: column;
   gap: 0.4rem;
   z-index: 800;
+  contain: layout;
 }
 
 /* ══════════════════════════════════════════════
@@ -2570,6 +2476,7 @@ html.konami nav { border-bottom-color: transparent !important; }
   40%       { transform: scale(1.18); }
 }
 .coin-bump { animation: coin-bump-anim 0.4s ease; }
+.coin-display.coin-bump { will-change: transform; }
 
 /* ══════════════════════════════════════════════
    PLAYER STATS SECTION
@@ -3260,7 +3167,7 @@ html.konami nav { border-bottom-color: transparent !important; }
 }
 .hire-xp-label { color: var(--c2); white-space: nowrap; }
 .hire-xp-track { flex: 1; height: 10px; background: var(--border); border: 1px solid var(--shadow); }
-.hire-xp-fill  { height: 100%; background: var(--c1); transition: width 0.4s ease; }
+.hire-xp-fill  { height: 100%; background: var(--c1); transition: width 0.4s ease; will-change: transform; }
 .hire-xp-pct   { color: var(--muted); white-space: nowrap; }
 .hire-xp-cta   {
   font-family: var(--pixel); font-size: 0.4rem; padding: 3px 8px;
@@ -3308,3 +3215,38 @@ html.konami nav { border-bottom-color: transparent !important; }
 .ctyper-code  { font-family: 'Courier New', monospace; font-size: 0.78rem; line-height: 1.6; white-space: pre; overflow-x: auto; background: #161b22; padding: 0.75rem; border: 1px solid #30363d; min-height: 80px; }
 .ctyper-input { font-family: 'Courier New', monospace; font-size: 0.78rem; background: #161b22; color: #e6edf3; border: 1px solid var(--c1); padding: 0.5rem; resize: none; width: 100%; box-sizing: border-box; outline: none; }
 .ctyper-result { display: flex; flex-direction: column; align-items: center; gap: 0.5rem; font-family: var(--pixel); font-size: 0.5rem; color: var(--c1); }
+
+/* ── Leaderboard ── */
+.lb-table { width: 100%; border-collapse: collapse; font-family: var(--pixel); font-size: 0.45rem; }
+.lb-row   { border-bottom: 1px solid var(--border); }
+.lb-cell  { padding: 0.35rem 0.4rem; }
+.lb-score { color: var(--c1); font-weight: bold; }
+.lb-empty { color: var(--muted); }
+
+/* ── Coin Shop ── */
+.shop-section-title {
+  font-family: var(--pixel); font-size: 0.45rem;
+  color: var(--muted); margin: 0.4rem 0 0.2rem;
+  border-bottom: 1px solid var(--border); padding-bottom: 0.2rem;
+}
+.shop-row {
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.25rem 0; border-bottom: 1px solid var(--border);
+}
+.shop-swatch {
+  width: 14px; height: 14px; border: 1px solid var(--border);
+  flex-shrink: 0; image-rendering: pixelated;
+}
+.shop-buy-btn {
+  font-family: var(--pixel); font-size: 0.4rem;
+  background: var(--c1); color: var(--bg);
+  border: none; padding: 2px 5px; cursor: pointer;
+  white-space: nowrap;
+}
+.shop-buy-btn:disabled {
+  background: var(--muted); cursor: not-allowed; opacity: 0.5;
+}
+.shop-owned {
+  font-family: var(--pixel); font-size: 0.4rem;
+  color: var(--c2); white-space: nowrap;
+}

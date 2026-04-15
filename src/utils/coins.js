@@ -9,3 +9,7 @@ export const addCoins = (n) => {
   return next
 }
 
+export const getUnlockedPalettes = () => {
+  try { return JSON.parse(localStorage.getItem('unlocked-palettes') || '[]') } catch { return [] }
+}
+

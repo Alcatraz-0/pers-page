@@ -326,9 +326,20 @@ const SceneCanvas = forwardRef(function SceneCanvas({ mode = 'night' }, ref) {
     io.observe(canvas)
     if (modeRef.current !== 'none') raf = requestAnimationFrame(draw)
 
+    const onVisibility = () => {
+      if (document.hidden) {
+        if (raf) { cancelAnimationFrame(raf); raf = null }
+      } else {
+        if (!raf && visible && modeRef.current !== 'none') raf = requestAnimationFrame(draw)
+      }
+    }
+    document.addEventListener('visibilitychange', onVisibility)
+
     return () => {
       if (raf) cancelAnimationFrame(raf)
-      raf = null; restartDrawRef.current = null; io.disconnect(); resizeObs.disconnect()
+      raf = null; restartDrawRef.current = null
+      document.removeEventListener('visibilitychange', onVisibility)
+      io.disconnect(); resizeObs.disconnect()
     }
   }, [])
 

@@ -68,6 +68,7 @@ export default function Hero() {
   const [variantIdx, setVariantIdx] = useState(() => randVariant(skyIdxFromTime()))
   const [variantFading, setVariantFading] = useState(false)
 
+  const heroVisibleRef = useRef(true)
   const skyIdxRef      = useRef(skyIdx)
   const variantIdxRef  = useRef(variantIdx)
   const manualRef      = useRef(false)
@@ -149,8 +150,17 @@ export default function Hero() {
     hero.addEventListener('mousemove', onMouse)
     hero.addEventListener('mouseleave', onLeave)
 
+    // Pause drawing work when hero is fully off-screen
+    const heroObs = new IntersectionObserver(
+      ([entry]) => { heroVisibleRef.current = entry.isIntersecting },
+      { rootMargin: '200px 0px -200px 0px' }
+    )
+    heroObs.observe(hero)
+
     let raf
     function tick() {
+      if (!heroVisibleRef.current) { raf = requestAnimationFrame(tick); return }
+
       const sY = scrollYRef.current
       const { x, y } = mouseOffRef.current
       const heroH = hero.offsetHeight
@@ -197,6 +207,7 @@ export default function Hero() {
       hero.removeEventListener('mousemove', onMouse)
       hero.removeEventListener('mouseleave', onLeave)
       cancelAnimationFrame(raf)
+      heroObs.disconnect()
     }
   }, [])
 

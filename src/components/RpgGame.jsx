@@ -75,18 +75,17 @@ const initState = (enemyIdx = 0, equipment = []) => {
     enemyHp: ENEMIES[enemyIdx].hp,
     enemyIdx,
     log: [],
-    phase: 'shop',    // shop | player | lose | victory
+    phase: 'shop',
     totalCoins: 0,
     enemiesDefeated: 0,
-    inventory: [],    // consumables held
-    shopCoins: getCoins(),
+    inventory: [],
   }
 }
 
 /* ── Component ─────────────────────────────────────────────── */
 export default function RpgGame({ onClose }) {
-  const [equipment, setEquipment] = useState(() => loadEquipment())
-  const [gs, setGs] = useState(() => initState(0, loadEquipment()))
+  const [equipment, setEquipment] = useState(loadEquipment)
+  const [gs, setGs] = useState(() => { const eq = loadEquipment(); return initState(0, eq) })
   const [bagOpen, setBagOpen] = useState(false)
 
   const player = buildPlayerStats(equipment)
@@ -99,20 +98,15 @@ export default function RpgGame({ onClose }) {
     const coins = getCoins()
     if (coins < item.cost) { playBlip(200); return }
 
-    playEat()
+    playSuccess()
     addCoins(-item.cost)
 
     if (isEquip) {
       const next = [...equipment, item.id]
       saveEquipment(next)
       setEquipment(next)
-      setGs(prev => ({ ...prev, shopCoins: getCoins() }))
     } else {
-      setGs(prev => ({
-        ...prev,
-        inventory: [...prev.inventory, item],
-        shopCoins: getCoins(),
-      }))
+      setGs(prev => ({ ...prev, inventory: [...prev.inventory, item] }))
     }
   }, [equipment])
 
@@ -124,10 +118,8 @@ export default function RpgGame({ onClose }) {
       ...prev,
       phase: 'player',
       log: [`[BATTLE START] ${ENEMIES[prev.enemyIdx].name} appeared! ${ENEMIES[prev.enemyIdx].desc}`],
-      // clamp HP/MP to new maxes in case equipment changed
       playerHp: Math.min(prev.playerHp, p.maxHp),
       playerMp: Math.min(prev.playerMp, p.maxMp),
-      shopCoins: getCoins(),
     }))
   }, [equipment])
 
@@ -181,7 +173,6 @@ export default function RpgGame({ onClose }) {
           totalCoins, enemiesDefeated, inventory,
           log: addLog(`★ ${enemy.name} defeated! +${reward} coins! VISIT THE SHOP!`, log),
           phase: 'shop',
-          shopCoins: getCoins() + totalCoins, // coins not saved yet, but show earned
         }
       }
 
@@ -234,84 +225,17 @@ export default function RpgGame({ onClose }) {
   }, [equipment])
 
   const restart = () => {
-    setEquipment(loadEquipment())
-    setGs(initState(0, loadEquipment()))
+    const eq = loadEquipment()
+    setEquipment(eq)
+    setGs(initState(0, eq))
     setBagOpen(false)
   }
 
   /* ── Derived values ─────────────────────────────────── */
-  const hpPct  = (gs.playerHp / player.maxHp) * 100
-  const mpPct  = (gs.playerMp / player.maxMp) * 100
-  const eHpPct = (gs.enemyHp  / enemy.hp)     * 100
-  const shopCoins = gs.shopCoins ?? getCoins()
-
-  /* ── Shop screen ────────────────────────────────────── */
-  const ShopScreen = () => (
-    <div className="rpg-shop">
-      <div className="rpg-shop-header">
-        <span>🏪 ITEM SHOP</span>
-        <span className="rpg-shop-enemy">Next: {enemy.icon} {enemy.name}</span>
-      </div>
-      <div className="rpg-shop-stats">
-        HP: {gs.playerHp}/{player.maxHp} &nbsp;·&nbsp;
-        MP: {gs.playerMp}/{player.maxMp} &nbsp;·&nbsp;
-        ATK: {player.atk} &nbsp;·&nbsp;
-        ★ COINS: {shopCoins}
-      </div>
-
-      <div className="rpg-shop-section">CONSUMABLES</div>
-      <div className="rpg-shop-grid">
-        {CONSUMABLES.map(item => {
-          const canAfford = shopCoins >= item.cost
-          return (
-            <div key={item.id} className={`rpg-shop-item${!canAfford ? ' dimmed' : ''}`}>
-              <span className="rpg-shop-icon">{item.icon}</span>
-              <div className="rpg-shop-info">
-                <div className="rpg-shop-name">{item.name}</div>
-                <div className="rpg-shop-desc">{item.desc}</div>
-              </div>
-              <div className="rpg-shop-right">
-                <div className="rpg-shop-cost">★{item.cost}</div>
-                <button
-                  className="rpg-shop-btn"
-                  disabled={!canAfford}
-                  onClick={() => buyItem(item, false)}
-                >BUY</button>
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="rpg-shop-section">EQUIPMENT</div>
-      <div className="rpg-shop-grid">
-        {EQUIPMENT.map(item => {
-          const owned    = equipment.includes(item.id)
-          const canAfford = shopCoins >= item.cost
-          return (
-            <div key={item.id} className={`rpg-shop-item${(!canAfford && !owned) ? ' dimmed' : ''}`}>
-              <span className="rpg-shop-icon">{item.icon}</span>
-              <div className="rpg-shop-info">
-                <div className="rpg-shop-name">{item.name}</div>
-                <div className="rpg-shop-desc">{item.desc}</div>
-              </div>
-              <div className="rpg-shop-right">
-                <div className="rpg-shop-cost">★{item.cost}</div>
-                {owned
-                  ? <span className="rpg-shop-owned">✓ OWNED</span>
-                  : <button className="rpg-shop-btn" disabled={!canAfford} onClick={() => buyItem(item, true)}>BUY</button>
-                }
-              </div>
-            </div>
-          )
-        })}
-      </div>
-
-      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-        <button className="btn btn-primary" onClick={startBattle}>FIGHT →</button>
-      </div>
-    </div>
-  )
+  const hpPct     = (gs.playerHp / player.maxHp) * 100
+  const mpPct     = (gs.playerMp / player.maxMp) * 100
+  const eHpPct    = (gs.enemyHp  / enemy.hp)     * 100
+  const shopCoins = getCoins()
 
   /* ── Render ─────────────────────────────────────────── */
   return (
@@ -325,7 +249,68 @@ export default function RpgGame({ onClose }) {
 
         <div className="rpg-body">
           {/* ── Shop Phase ── */}
-          {gs.phase === 'shop' && <ShopScreen />}
+          {gs.phase === 'shop' && (
+            <div className="rpg-shop">
+              <div className="rpg-shop-header">
+                <span>🏪 ITEM SHOP</span>
+                <span className="rpg-shop-enemy">Next: {enemy.icon} {enemy.name}</span>
+              </div>
+              <div className="rpg-shop-stats">
+                HP: {gs.playerHp}/{player.maxHp} &nbsp;·&nbsp;
+                MP: {gs.playerMp}/{player.maxMp} &nbsp;·&nbsp;
+                ATK: {player.atk} &nbsp;·&nbsp;
+                ★ COINS: {shopCoins}
+              </div>
+
+              <div className="rpg-shop-section">CONSUMABLES</div>
+              <div className="rpg-shop-grid">
+                {CONSUMABLES.map(item => {
+                  const canAfford = shopCoins >= item.cost
+                  return (
+                    <div key={item.id} className={`rpg-shop-item${!canAfford ? ' dimmed' : ''}`}>
+                      <span className="rpg-shop-icon">{item.icon}</span>
+                      <div className="rpg-shop-info">
+                        <div className="rpg-shop-name">{item.name}</div>
+                        <div className="rpg-shop-desc">{item.desc}</div>
+                      </div>
+                      <div className="rpg-shop-right">
+                        <div className="rpg-shop-cost">★{item.cost}</div>
+                        <button className="rpg-shop-btn" disabled={!canAfford} onClick={() => buyItem(item, false)}>BUY</button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div className="rpg-shop-section">EQUIPMENT</div>
+              <div className="rpg-shop-grid">
+                {EQUIPMENT.map(item => {
+                  const owned     = equipment.includes(item.id)
+                  const canAfford = shopCoins >= item.cost
+                  return (
+                    <div key={item.id} className={`rpg-shop-item${(!canAfford && !owned) ? ' dimmed' : ''}`}>
+                      <span className="rpg-shop-icon">{item.icon}</span>
+                      <div className="rpg-shop-info">
+                        <div className="rpg-shop-name">{item.name}</div>
+                        <div className="rpg-shop-desc">{item.desc}</div>
+                      </div>
+                      <div className="rpg-shop-right">
+                        <div className="rpg-shop-cost">★{item.cost}</div>
+                        {owned
+                          ? <span className="rpg-shop-owned">✓ OWNED</span>
+                          : <button className="rpg-shop-btn" disabled={!canAfford} onClick={() => buyItem(item, true)}>BUY</button>
+                        }
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+
+              <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                <button className="btn btn-primary" onClick={startBattle}>FIGHT →</button>
+              </div>
+            </div>
+          )}
 
           {/* ── Battle Phase ── */}
           {gs.phase === 'player' && (<>

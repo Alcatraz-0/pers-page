@@ -133,8 +133,13 @@ function HelpDialog({ onClose }) {
 
 function ResumeBtn() {
   const [burst, setBurst] = useState(false)
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault()
+    const res = await fetch('/resume.pdf', { method: 'HEAD' })
+    if (!res.ok) {
+      alert('Resume not uploaded yet — check back soon!')
+      return
+    }
     setBurst(true)
     setTimeout(() => setBurst(false), 700)
     const link = document.createElement('a')

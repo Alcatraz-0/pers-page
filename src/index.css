@@ -638,20 +638,90 @@ section {
 }
 
 .hero-inner {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 2rem 5.5rem; /* bottom clears the sky slider */
+  padding: 0 2.5rem 1.5rem;
   position: relative;
   z-index: 5;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 3rem;
+  align-items: center;
+}
+
+/* ── Hero columns ── */
+.hero-left  { display: flex; flex-direction: column; }
+.hero-right { display: flex; flex-direction: column; gap: 0.65rem; }
+
+/* Open-to-work status bar */
+.hero-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  background: rgba(8, 12, 24, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.5rem 0.85rem;
+}
+.hero-status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 7px rgba(34, 197, 94, 0.9);
+  flex-shrink: 0;
+  animation: pulse-green 2s ease-in-out infinite;
+}
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 5px rgba(34,197,94,0.9); }
+  50%       { box-shadow: 0 0 12px rgba(34,197,94,0.5); }
+}
+.hero-status-text {
+  font-family: var(--pixel);
+  font-size: 0.52rem;
+  color: rgba(255, 255, 255, 0.80);
+  letter-spacing: 0.07em;
+}
+
+/* Currently building card */
+.hero-building-card {
+  background: rgba(8, 12, 24, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-left: 2px solid var(--c1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.22rem;
+}
+.hero-building-label {
+  font-family: var(--pixel);
+  font-size: 0.48rem;
+  color: var(--c1);
+  letter-spacing: 0.07em;
+  margin-bottom: 0.15rem;
+}
+.hero-building-title {
+  font-family: var(--pixel);
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.45;
+}
+.hero-building-sub {
+  font-family: var(--pixel);
+  font-size: 0.48rem;
+  color: rgba(255, 255, 255, 0.50);
+  letter-spacing: 0.04em;
 }
 
 .hero-eyebrow {
   font-family: var(--pixel);
-  font-size: 0.68rem;
+  font-size: 0.58rem;
   color: var(--c2);
   letter-spacing: 0.12em;
-  margin-bottom: 1rem;
+  margin-bottom: 0.55rem;
 }
 
 /* Glitch on hero name */
@@ -666,25 +736,25 @@ section {
 
 .hero-name {
   font-family: var(--pixel);
-  font-size: clamp(1.4rem, 4vw, 2.6rem);
-  line-height: 1.4;
-  margin-bottom: 0.75rem;
+  font-size: clamp(1.1rem, 3vw, 2.0rem);
+  line-height: 1.35;
+  margin-bottom: 0.5rem;
   animation: glitch 9s infinite;
   will-change: transform;
 }
 
 .hero-role {
   font-family: var(--pixel);
-  font-size: clamp(0.82rem, 1.6vw, 1.05rem);
+  font-size: clamp(0.62rem, 1.2vw, 0.80rem);
   color: var(--muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.9rem;
   line-height: 1.8;
-  min-height: 2.6em;
+  min-height: 2.2em;
 }
 .hero-role .tw-cursor {
   display: inline-block;
-  width: 7px;
-  height: 1.1em;
+  width: 6px;
+  height: 1.0em;
   background: var(--c1);
   margin-left: 3px;
   vertical-align: middle;
@@ -692,23 +762,22 @@ section {
 }
 
 .hero-bio {
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  max-width: 620px;
-  margin-bottom: 2rem;
-  line-height: 1.75;
+  margin-bottom: 1.1rem;
+  line-height: 1.7;
 }
 
 .hero-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
 }
 .tag {
   font-family: var(--pixel);
-  font-size: 0.58rem;
-  padding: 5px 10px;
+  font-size: 0.55rem;
+  padding: 4px 9px;
   border: 2px solid var(--border);
   background: var(--card-bg);
   color: var(--ink);
@@ -722,9 +791,9 @@ section {
 
 .hero-cta {
   display: flex;
-  gap: 1rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
-  margin-bottom: 3rem;
+  margin-bottom: 0;
 }
 
 .btn {
@@ -766,20 +835,18 @@ section {
 }
 
 .hero-stats {
-  display: flex;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem;
 }
 
 .stat-card {
-  /* Glass — sky always shows through, no hard opaque box */
   background: rgba(8, 12, 24, 0.48);
   border: 1px solid rgba(255, 255, 255, 0.13);
   box-shadow: 0 4px 20px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.07);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: 0.9rem 1.2rem;
-  min-width: 120px;
+  padding: 0.7rem 0.85rem;
   transition: transform 0.15s, box-shadow 0.15s;
 }
 .stat-card:hover {
@@ -788,17 +855,17 @@ section {
 }
 .stat-value {
   font-family: var(--pixel);
-  font-size: 1.2rem;
+  font-size: 1.0rem;
   display: block;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.3rem;
   color: var(--c1);
 }
 .stat-label {
   font-family: var(--pixel);
-  font-size: 0.58rem;
+  font-size: 0.50rem;
   color: rgba(255, 255, 255, 0.72);
-  letter-spacing: 0.07em;
-  line-height: 1.5;
+  letter-spacing: 0.06em;
+  line-height: 1.45;
   white-space: nowrap;
 }
 
@@ -2461,9 +2528,9 @@ html.konami nav { border-bottom-color: transparent !important; }
   .projects-grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
-  .hero-stats { flex-direction: column; }
+  .hero-inner { grid-template-columns: 1fr; padding: 0 1.25rem 5rem; }
+  .hero-right  { display: none; }
   section { padding: 3rem 1.25rem; }
-  .hero-inner { padding: 0 1.25rem; }
   /* Footer landscape — shrink sprites and remove massive side padding */
   .fl-ground-sprites { padding: 0 12px; gap: 0.6rem; }
   .fl-sprite { width: 56px; height: 56px; }

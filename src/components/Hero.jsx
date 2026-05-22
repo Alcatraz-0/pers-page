@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTypewriter } from '../hooks/useTypewriter'
-import { STATS } from '../data/index'
+import { STATS, NOW_ITEMS } from '../data/index'
 import SceneCanvas from './SceneCanvas'
 
 const ROLES = [
@@ -293,39 +293,62 @@ export default function Hero() {
         ))}
 
         <div className="hero-inner" ref={heroInnerRef}>
-          <p className="hero-eyebrow">// PLAYER ONE — READY</p>
 
-          <h1 className="hero-name">ANAND<br />MEENA</h1>
+          {/* ── LEFT — identity, bio, actions ── */}
+          <div className="hero-left">
+            <p className="hero-eyebrow">// PLAYER ONE — READY</p>
 
-          <p className="hero-role">
-            {role}
-            <span className="tw-cursor" />
-          </p>
+            <h1 className="hero-name">ANAND<br />MEENA</h1>
 
-          <p className="hero-bio">
-            Software Engineer and MS CS student at the University of Illinois Chicago.
-            I build at the intersection of machine learning, cloud infrastructure, and distributed systems —
-            from FPGA-based inference pipelines on quantum hardware to multi-cloud LLM platforms
-            and RAG systems for financial document analysis.
-          </p>
+            <p className="hero-role">
+              {role}
+              <span className="tw-cursor" />
+            </p>
 
-          <div className="hero-tags">
-            {HERO_TAGS.map(t => <span key={t} className="tag">{t}</span>)}
+            <p className="hero-bio">
+              Software Engineer &amp; MS CS student at UIC. Building at the intersection of
+              ML, cloud infrastructure, and distributed systems — FPGA inference pipelines,
+              multi-cloud LLM platforms, and RAG systems.
+            </p>
+
+            <div className="hero-tags">
+              {HERO_TAGS.map(t => <span key={t} className="tag">{t}</span>)}
+            </div>
+
+            <div className="hero-cta">
+              <a href="#projects" className="btn btn-primary">VIEW PROJECTS</a>
+              <a href="#contact" className="btn btn-outline">GET IN TOUCH</a>
+            </div>
           </div>
 
-          <div className="hero-cta">
-            <a href="#projects" className="btn btn-primary">VIEW PROJECTS</a>
-            <a href="#contact" className="btn btn-outline">GET IN TOUCH</a>
+          {/* ── RIGHT — status, stats, currently building ── */}
+          <div className="hero-right">
+
+            {/* Open to work */}
+            <div className="hero-status-bar">
+              <span className="hero-status-dot" />
+              <span className="hero-status-text">OPEN TO WORK · CHICAGO, IL</span>
+            </div>
+
+            {/* 2×2 stat grid */}
+            <div className="hero-stats">
+              {STATS.map(s => (
+                <div key={s.value} className="stat-card">
+                  <span className="stat-value">{s.value}</span>
+                  <span className="stat-label">{s.label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Currently building */}
+            <div className="hero-building-card">
+              <p className="hero-building-label">⚙ {NOW_ITEMS[0].label}</p>
+              <p className="hero-building-title">{NOW_ITEMS[0].value}</p>
+              <p className="hero-building-sub">{NOW_ITEMS[0].detail}</p>
+            </div>
+
           </div>
 
-          <div className="hero-stats">
-            {STATS.map(s => (
-              <div key={s.value} className="stat-card">
-                <span className="stat-value">{s.value}</span>
-                <span className="stat-label">{s.label}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Time-of-day slider */}

@@ -511,18 +511,23 @@ section {
 }
 
 /* ── Hero text legibility on any sky ── */
+/* Technique: multi-layer halo shadow wraps each letter individually —
+   no background box, no overlay, just depth around the glyphs themselves. */
 
-/* Base: every sky gets a light shadow so text never fully merges with background */
+/* Base halo — all skies */
 #hero .hero-eyebrow,
 #hero .hero-name,
 #hero .hero-role,
 #hero .hero-bio,
 #hero .stat-value,
 #hero .stat-label {
-  text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 0 14px rgba(0,0,0,0.25);
+  text-shadow:
+    0 0 3px  rgba(0,0,0,0.60),
+    0 0 8px  rgba(0,0,0,0.35),
+    0 1px 2px rgba(0,0,0,0.70);
 }
 
-/* Dawn / sunset: warm colourful backgrounds — stronger shadow */
+/* Dawn / sunset: warm colourful backgrounds — deeper halo */
 #hero[data-sky="sunset"] .hero-eyebrow,
 #hero[data-sky="sunset"] .hero-name,
 #hero[data-sky="sunset"] .hero-role,
@@ -535,15 +540,19 @@ section {
 #hero[data-sky="dawn"] .hero-bio,
 #hero[data-sky="dawn"] .stat-value,
 #hero[data-sky="dawn"] .stat-label {
-  text-shadow: 0 1px 5px rgba(0,0,0,0.82), 0 2px 14px rgba(0,0,0,0.55), 0 0 28px rgba(0,0,0,0.3);
+  text-shadow:
+    0 0 2px  rgba(0,0,0,0.95),
+    0 0 6px  rgba(0,0,0,0.85),
+    0 0 14px rgba(0,0,0,0.55),
+    0 1px 2px rgba(0,0,0,0.90);
 }
 
-/* Day / afternoon: bright light-blue sky — force white text + heavy shadow + scrim */
+/* Day / afternoon: bright sky — white text + tight dark halo around every glyph */
 #hero[data-sky="day"] .hero-role,
 #hero[data-sky="day"] .hero-bio,
 #hero[data-sky="afternoon"] .hero-role,
 #hero[data-sky="afternoon"] .hero-bio {
-  color: rgba(255, 255, 255, 0.95) !important;
+  color: rgba(255, 255, 255, 0.97) !important;
 }
 #hero[data-sky="day"] .hero-eyebrow,
 #hero[data-sky="day"] .hero-name,
@@ -558,27 +567,14 @@ section {
 #hero[data-sky="afternoon"] .stat-value,
 #hero[data-sky="afternoon"] .stat-label {
   text-shadow:
-    0 1px 3px rgba(0,0,0,0.95),
-    0 2px 10px rgba(0,0,0,0.80),
-    0 4px 24px rgba(0,0,0,0.55);
-}
-
-/* Day / afternoon / dawn / sunset: semi-transparent scrim behind the text block */
-#hero[data-sky="day"] .hero-inner::before,
-#hero[data-sky="afternoon"] .hero-inner::before,
-#hero[data-sky="dawn"] .hero-inner::before,
-#hero[data-sky="sunset"] .hero-inner::before {
-  content: '';
-  position: absolute;
-  inset: -1.5rem -1rem;
-  width: min(680px, 85%);
-  background: linear-gradient(to right,
-    rgba(0,0,0,0.32) 0%,
-    rgba(0,0,0,0.18) 60%,
-    transparent 100%);
-  border-radius: 6px;
-  z-index: -1;
-  pointer-events: none;
+    0 0 1px  rgba(0,0,0,1),
+    0 0 4px  rgba(0,0,0,0.98),
+    0 0 10px rgba(0,0,0,0.85),
+    0 0 20px rgba(0,0,0,0.50),
+     1px  1px 2px rgba(0,0,0,0.95),
+    -1px -1px 2px rgba(0,0,0,0.95),
+     1px -1px 2px rgba(0,0,0,0.95),
+    -1px  1px 2px rgba(0,0,0,0.95);
 }
 
 /* Crossfading sky PNG stack */
@@ -645,7 +641,7 @@ section {
   max-width: 1100px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 2rem;
+  padding: 0 2rem 5.5rem; /* bottom clears the sky slider */
   position: relative;
   z-index: 5;
 }
@@ -756,6 +752,19 @@ section {
 }
 .btn-outline:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 var(--shadow); }
 
+/* Hero outline buttons must be visible on any sky — force white + border + shadow */
+#hero .btn-outline {
+  color: rgba(255, 255, 255, 0.92);
+  border-color: rgba(255, 255, 255, 0.65);
+  box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.35);
+  text-shadow: 0 0 4px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.75);
+}
+#hero .btn-outline:hover {
+  color: #fff;
+  border-color: #fff;
+  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.45);
+}
+
 .hero-stats {
   display: flex;
   gap: 1.5rem;
@@ -763,28 +772,34 @@ section {
 }
 
 .stat-card {
-  background: var(--card-bg);
-  border: 2px solid var(--border);
-  box-shadow: 4px 4px 0 0 var(--shadow);
-  padding: 1.25rem 1.5rem;
-  min-width: 130px;
-  transition: transform 0.15s, box-shadow 0.15s, background 0.3s;
+  /* Glass — sky always shows through, no hard opaque box */
+  background: rgba(8, 12, 24, 0.48);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.30), inset 0 1px 0 rgba(255,255,255,0.07);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 0.9rem 1.2rem;
+  min-width: 120px;
+  transition: transform 0.15s, box-shadow 0.15s;
 }
-.stat-card:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 0 var(--shadow); }
+.stat-card:hover {
+  transform: translate(-2px,-2px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.40), inset 0 1px 0 rgba(255,255,255,0.10);
+}
 .stat-value {
   font-family: var(--pixel);
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
   color: var(--c1);
 }
 .stat-label {
   font-family: var(--pixel);
-  font-size: 0.72rem;
-  color: var(--muted);
-  letter-spacing: 0.08em;
-  line-height: 1.9;
-  white-space: pre-line;
+  font-size: 0.58rem;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.07em;
+  line-height: 1.5;
+  white-space: nowrap;
 }
 
 /* ── SCROLL WALKER — fixed right-margin character tracks scroll progress ── */
@@ -1538,12 +1553,13 @@ a.island-card:hover {
   opacity: 0.9;
 }
 
-/* Hero butterfly GIFs */
+/* Hero butterfly GIFs — always behind hero-inner (z-index: 5) */
 .hero-butterfly-gif {
   position: absolute;
   width: 72px; height: 72px;
   image-rendering: pixelated;
   pointer-events: none;
+  z-index: 2;
   z-index: 3;
   animation: bf-hero-drift 16s ease-in-out infinite;
   animation-duration: var(--bf-dur, 16s);

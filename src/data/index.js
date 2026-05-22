@@ -178,10 +178,10 @@ export const EXPERIENCE = [
 ]
 
 export const STATS = [
-  { value: '4.0', label: 'GPA\nMS @ UIC' },
-  { value: '4+', label: 'INTERNSHIPS &\nROLES' },
-  { value: '1', label: 'SPRINGER\nPUBLICATION' },
-  { value: '6+', label: 'RESEARCH\nPROJECTS' },
+  { value: '4.0', label: 'GPA · MS @ UIC' },
+  { value: '4+', label: 'ROLES & INTERNSHIPS' },
+  { value: '1', label: 'SPRINGER PUBLICATION' },
+  { value: '6+', label: 'RESEARCH PROJECTS' },
 ]
 
 export const CONTACT_ITEMS = [

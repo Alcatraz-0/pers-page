@@ -9,7 +9,7 @@ const ROLES = [
   'MS COMPUTER SCIENCE · GPA 4.0 / 4.0',
 ]
 
-const HERO_TAGS = ['PYTHON', 'AWS', 'HUGGING FACE', 'KUBERNETES', 'HADOOP', 'FPGA / HLS4ML', 'RAG / LLM', 'DJANGO']
+const HERO_TAGS = ['PYTHON', 'AWS', 'HUGGING FACE', 'KUBERNETES', 'FPGA / HLS4ML', 'RAG / LLM']
 
 const SKY_STATES = [
   { id: 'night',     label: 'NIGHT',     icon: '◐', dark: true,  canvas: 'night',
@@ -316,7 +316,6 @@ export default function Hero() {
           <div className="hero-cta">
             <a href="#projects" className="btn btn-primary">VIEW PROJECTS</a>
             <a href="#contact" className="btn btn-outline">GET IN TOUCH</a>
-            <a href="mailto:anand.01ntgy@gmail.com" className="btn btn-outline">EMAIL ME</a>
           </div>
 
           <div className="hero-stats">

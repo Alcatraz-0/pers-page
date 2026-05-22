@@ -651,10 +651,13 @@ section {
   min-height: calc(100vh - 56px - 8rem);
 }
 
-/* Content block — stays at the top */
+/* Content block — centred vertically in the space above the stats */
 .hero-content {
+  flex: 1;                    /* expand to fill available space above stats */
   display: flex;
   flex-direction: column;
+  justify-content: center;    /* vertical centre within that space */
+  max-width: 760px;           /* prevent text stretching full viewport width */
 }
 
 .hero-eyebrow {
@@ -705,6 +708,7 @@ section {
 .hero-bio {
   font-size: 0.9rem;
   color: var(--muted);
+  max-width: 600px;
   margin-bottom: 1.1rem;
   line-height: 1.7;
 }

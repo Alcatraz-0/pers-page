@@ -510,8 +510,19 @@ section {
   background: var(--bg);
 }
 
-/* Dawn/sunset: both are dark:true so page enters dark mode → var(--ink) is already light.
-   Add a subtle text shadow so text pops on any warm/colourful PNG variant. */
+/* ── Hero text legibility on any sky ── */
+
+/* Base: every sky gets a light shadow so text never fully merges with background */
+#hero .hero-eyebrow,
+#hero .hero-name,
+#hero .hero-role,
+#hero .hero-bio,
+#hero .stat-value,
+#hero .stat-label {
+  text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 0 14px rgba(0,0,0,0.25);
+}
+
+/* Dawn / sunset: warm colourful backgrounds — stronger shadow */
 #hero[data-sky="sunset"] .hero-eyebrow,
 #hero[data-sky="sunset"] .hero-name,
 #hero[data-sky="sunset"] .hero-role,
@@ -524,7 +535,50 @@ section {
 #hero[data-sky="dawn"] .hero-bio,
 #hero[data-sky="dawn"] .stat-value,
 #hero[data-sky="dawn"] .stat-label {
-  text-shadow: 0 1px 4px rgba(0,0,0,0.65), 0 0 12px rgba(0,0,0,0.3);
+  text-shadow: 0 1px 5px rgba(0,0,0,0.82), 0 2px 14px rgba(0,0,0,0.55), 0 0 28px rgba(0,0,0,0.3);
+}
+
+/* Day / afternoon: bright light-blue sky — force white text + heavy shadow + scrim */
+#hero[data-sky="day"] .hero-role,
+#hero[data-sky="day"] .hero-bio,
+#hero[data-sky="afternoon"] .hero-role,
+#hero[data-sky="afternoon"] .hero-bio {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+#hero[data-sky="day"] .hero-eyebrow,
+#hero[data-sky="day"] .hero-name,
+#hero[data-sky="day"] .hero-role,
+#hero[data-sky="day"] .hero-bio,
+#hero[data-sky="day"] .stat-value,
+#hero[data-sky="day"] .stat-label,
+#hero[data-sky="afternoon"] .hero-eyebrow,
+#hero[data-sky="afternoon"] .hero-name,
+#hero[data-sky="afternoon"] .hero-role,
+#hero[data-sky="afternoon"] .hero-bio,
+#hero[data-sky="afternoon"] .stat-value,
+#hero[data-sky="afternoon"] .stat-label {
+  text-shadow:
+    0 1px 3px rgba(0,0,0,0.95),
+    0 2px 10px rgba(0,0,0,0.80),
+    0 4px 24px rgba(0,0,0,0.55);
+}
+
+/* Day / afternoon / dawn / sunset: semi-transparent scrim behind the text block */
+#hero[data-sky="day"] .hero-inner::before,
+#hero[data-sky="afternoon"] .hero-inner::before,
+#hero[data-sky="dawn"] .hero-inner::before,
+#hero[data-sky="sunset"] .hero-inner::before {
+  content: '';
+  position: absolute;
+  inset: -1.5rem -1rem;
+  width: min(680px, 85%);
+  background: linear-gradient(to right,
+    rgba(0,0,0,0.32) 0%,
+    rgba(0,0,0,0.18) 60%,
+    transparent 100%);
+  border-radius: 6px;
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* Crossfading sky PNG stack */

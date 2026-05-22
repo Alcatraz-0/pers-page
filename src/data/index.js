@@ -93,7 +93,7 @@ export const RESEARCH = [
   {
     status: 'published',
     statusLabel: 'PUBLISHED — SPRINGER CCIS 2234',
-    title: 'CROSS-LANGUAGE QUESTION ANSWERING SYSTEM USING HUGGING-FACE TRANSFORMERS',
+    title: 'CROSS-LANGUAGE QUESTION ANSWERING SYSTEM USING HUGGING FACE TRANSFORMERS',
     venue: 'ICICBDA 2024 Conference Proceedings · January 2023 – June 2024 · First Author',
     abstract: 'Developed a cross-language question answering framework using Hugging Face Transformers, achieving 92% accuracy with 35.9–41.3 BLEU scores across multilingual language pairs. Fine-tuned transformer models for cross-lingual transfer demonstrate strong generalization over diverse multilingual benchmarks.',
     actions: [

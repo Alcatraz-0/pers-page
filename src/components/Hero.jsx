@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTypewriter } from '../hooks/useTypewriter'
-import { STATS, NOW_ITEMS } from '../data/index'
+import { STATS } from '../data/index'
 import SceneCanvas from './SceneCanvas'
 
 const ROLES = [
@@ -294,8 +294,8 @@ export default function Hero() {
 
         <div className="hero-inner" ref={heroInnerRef}>
 
-          {/* ── LEFT — identity, bio, actions ── */}
-          <div className="hero-left">
+          {/* ── Identity & actions ── */}
+          <div className="hero-content">
             <p className="hero-eyebrow">// PLAYER ONE — READY</p>
 
             <h1 className="hero-name">ANAND<br />MEENA</h1>
@@ -321,32 +321,14 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── RIGHT — status, stats, currently building ── */}
-          <div className="hero-right">
-
-            {/* Open to work */}
-            <div className="hero-status-bar">
-              <span className="hero-status-dot" />
-              <span className="hero-status-text">OPEN TO WORK · CHICAGO, IL</span>
-            </div>
-
-            {/* 2×2 stat grid */}
-            <div className="hero-stats">
-              {STATS.map(s => (
-                <div key={s.value} className="stat-card">
-                  <span className="stat-value">{s.value}</span>
-                  <span className="stat-label">{s.label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Currently building */}
-            <div className="hero-building-card">
-              <p className="hero-building-label">⚙ {NOW_ITEMS[0].label}</p>
-              <p className="hero-building-title">{NOW_ITEMS[0].value}</p>
-              <p className="hero-building-sub">{NOW_ITEMS[0].detail}</p>
-            </div>
-
+          {/* ── Stats — anchored to bottom, full-width row ── */}
+          <div className="hero-stats">
+            {STATS.map(s => (
+              <div key={s.value} className="stat-card">
+                <span className="stat-value">{s.value}</span>
+                <span className="stat-label">{s.label}</span>
+              </div>
+            ))}
           </div>
 
         </div>

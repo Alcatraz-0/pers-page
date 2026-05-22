@@ -641,79 +641,20 @@ section {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 2.5rem 1.5rem;
-  position: relative;
-  z-index: 5;
-  display: grid;
-  grid-template-columns: 1fr 390px;
-  gap: 3rem;
-  align-items: center;
-}
-
-/* ── Hero columns ── */
-.hero-left  { display: flex; flex-direction: column; }
-.hero-right { display: flex; flex-direction: column; gap: 0.65rem; }
-
-/* Open-to-work status bar */
-.hero-status-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  background: rgba(8, 12, 24, 0.48);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 0.5rem 0.85rem;
-}
-.hero-status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: #22c55e;
-  box-shadow: 0 0 7px rgba(34, 197, 94, 0.9);
-  flex-shrink: 0;
-  animation: pulse-green 2s ease-in-out infinite;
-}
-@keyframes pulse-green {
-  0%, 100% { box-shadow: 0 0 5px rgba(34,197,94,0.9); }
-  50%       { box-shadow: 0 0 12px rgba(34,197,94,0.5); }
-}
-.hero-status-text {
-  font-family: var(--pixel);
-  font-size: 0.52rem;
-  color: rgba(255, 255, 255, 0.80);
-  letter-spacing: 0.07em;
-}
-
-/* Currently building card */
-.hero-building-card {
-  background: rgba(8, 12, 24, 0.48);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-left: 2px solid var(--c1);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 0.7rem 0.9rem;
+  /* flex column: content at top, stats pinned to bottom via margin-top: auto */
   display: flex;
   flex-direction: column;
-  gap: 0.22rem;
+  padding: 0 2.5rem 5.5rem;
+  position: relative;
+  z-index: 5;
+  /* min-height gives flex room to push stats down */
+  min-height: calc(100vh - 56px - 8rem);
 }
-.hero-building-label {
-  font-family: var(--pixel);
-  font-size: 0.48rem;
-  color: var(--c1);
-  letter-spacing: 0.07em;
-  margin-bottom: 0.15rem;
-}
-.hero-building-title {
-  font-family: var(--pixel);
-  font-size: 0.62rem;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.45;
-}
-.hero-building-sub {
-  font-family: var(--pixel);
-  font-size: 0.48rem;
-  color: rgba(255, 255, 255, 0.50);
-  letter-spacing: 0.04em;
+
+/* Content block — stays at the top */
+.hero-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .hero-eyebrow {
@@ -836,8 +777,10 @@ section {
 
 .hero-stats {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin-top: auto; /* pushes to bottom of hero-inner */
+  padding-top: 1.5rem;
 }
 
 .stat-card {
@@ -866,11 +809,11 @@ section {
 }
 .stat-label {
   font-family: var(--pixel);
-  font-size: 0.50rem;
+  font-size: 0.52rem;
   color: rgba(255, 255, 255, 0.62);
   letter-spacing: 0.05em;
-  line-height: 1.6;
-  white-space: normal;
+  line-height: 1.55;
+  white-space: nowrap;
 }
 
 /* ── SCROLL WALKER — fixed right-margin character tracks scroll progress ── */
@@ -2532,8 +2475,8 @@ html.konami nav { border-bottom-color: transparent !important; }
   .projects-grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
-  .hero-inner { grid-template-columns: 1fr; padding: 0 1.25rem 5rem; }
-  .hero-right  { display: none; }
+  .hero-inner { min-height: unset; padding: 0 1.25rem 5rem; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
   section { padding: 3rem 1.25rem; }
   /* Footer landscape — shrink sprites and remove massive side padding */
   .fl-ground-sprites { padding: 0 12px; gap: 0.6rem; }

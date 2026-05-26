@@ -8,3 +8,7 @@ Thumbs.db
 asset_folder/
 _docs/
 .claude/
+
+audit.mjs
+audit_check.txt
+writeaudit.ps1

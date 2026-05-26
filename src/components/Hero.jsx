@@ -9,7 +9,7 @@ const ROLES = [
   'MS COMPUTER SCIENCE · GPA 4.0 / 4.0',
 ]
 
-const HERO_TAGS = ['PYTHON', 'AWS', 'HUGGING FACE', 'KUBERNETES', 'FPGA / HLS4ML', 'RAG / LLM']
+const HERO_TAGS = ['PYTHON', 'AWS', 'HUGGING FACE', 'KUBERNETES', 'HADOOP', 'FPGA / HLS4ML', 'RAG / LLM', 'DJANGO']
 
 const SKY_STATES = [
   { id: 'night',     label: 'NIGHT',     icon: '◐', dark: true,  canvas: 'night',
@@ -293,35 +293,32 @@ export default function Hero() {
         ))}
 
         <div className="hero-inner" ref={heroInnerRef}>
+          <p className="hero-eyebrow">// PLAYER ONE — READY</p>
 
-          {/* ── Identity & actions ── */}
-          <div className="hero-content">
-            <p className="hero-eyebrow">// PLAYER ONE — READY</p>
+          <h1 className="hero-name">ANAND<br />MEENA</h1>
 
-            <h1 className="hero-name">ANAND<br />MEENA</h1>
+          <p className="hero-role">
+            {role}
+            <span className="tw-cursor" />
+          </p>
 
-            <p className="hero-role">
-              {role}
-              <span className="tw-cursor" />
-            </p>
+          <p className="hero-bio">
+            Software Engineer and MS CS student at the University of Illinois Chicago.
+            I build at the intersection of machine learning, cloud infrastructure, and distributed systems —
+            from FPGA-based inference pipelines on quantum hardware to multi-cloud LLM platforms
+            and RAG systems for financial document analysis.
+          </p>
 
-            <p className="hero-bio">
-              Software Engineer &amp; MS CS student at UIC. Building at the intersection of
-              ML, cloud infrastructure, and distributed systems — FPGA inference pipelines,
-              multi-cloud LLM platforms, and RAG systems.
-            </p>
-
-            <div className="hero-tags">
-              {HERO_TAGS.map(t => <span key={t} className="tag">{t}</span>)}
-            </div>
-
-            <div className="hero-cta">
-              <a href="#projects" className="btn btn-primary">VIEW PROJECTS</a>
-              <a href="#contact" className="btn btn-outline">GET IN TOUCH</a>
-            </div>
+          <div className="hero-tags">
+            {HERO_TAGS.map(t => <span key={t} className="tag">{t}</span>)}
           </div>
 
-          {/* ── Stats — anchored to bottom, full-width row ── */}
+          <div className="hero-cta">
+            <a href="#projects" className="btn btn-primary">VIEW PROJECTS</a>
+            <a href="#contact" className="btn btn-outline">GET IN TOUCH</a>
+            <a href="mailto:anand.01ntgy@gmail.com" className="btn btn-outline">EMAIL ME</a>
+          </div>
+
           <div className="hero-stats">
             {STATS.map(s => (
               <div key={s.value} className="stat-card">
@@ -330,7 +327,6 @@ export default function Hero() {
               </div>
             ))}
           </div>
-
         </div>
 
         {/* Time-of-day slider */}

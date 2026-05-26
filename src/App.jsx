@@ -119,7 +119,6 @@ export default function App() {
         setTyperOpen(false)
         setScoresOpen(false)
         setShopOpen(false)
-        setLauncherOpen(false)
       }
     }
     window.addEventListener('keydown', onKey)

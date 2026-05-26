@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { addCoins } from '../utils/coins'
 import { playSuccess, playGameOver, playEat } from '../utils/sound'
 
@@ -131,6 +131,37 @@ export default function Game2048({ onClose }) {
     return () => window.removeEventListener('keydown', onKey)
   }, [handleMove])
 
+  // Touch swipe — one direction per gesture (start → end), 30px threshold
+  const boardRef = useRef(null)
+  useEffect(() => {
+    const el = boardRef.current
+    if (!el) return
+    const MIN = 30
+    let sx = 0, sy = 0, active = false
+    const onStart = (e) => {
+      const t = e.touches[0]
+      sx = t.clientX; sy = t.clientY; active = true
+    }
+    const onMove = (e) => { if (active) e.preventDefault() }
+    const onEnd = (e) => {
+      if (!active) return
+      active = false
+      const t = e.changedTouches[0]
+      const dx = t.clientX - sx, dy = t.clientY - sy
+      if (Math.abs(dx) < MIN && Math.abs(dy) < MIN) return
+      if (Math.abs(dx) > Math.abs(dy)) handleMove(dx > 0 ? 'right' : 'left')
+      else                              handleMove(dy > 0 ? 'down'  : 'up')
+    }
+    el.addEventListener('touchstart', onStart, { passive: true })
+    el.addEventListener('touchmove',  onMove,  { passive: false })
+    el.addEventListener('touchend',   onEnd,   { passive: true })
+    return () => {
+      el.removeEventListener('touchstart', onStart)
+      el.removeEventListener('touchmove',  onMove)
+      el.removeEventListener('touchend',   onEnd)
+    }
+  }, [handleMove])
+
   const reset = () => { setGrid(newGrid()); setScore(0); setWon(false); setOver(false) }
 
   return (
@@ -148,7 +179,7 @@ export default function Game2048({ onClose }) {
               <button className="w98-btn-ok" onClick={reset}>NEW GAME</button>
             </div>
           )}
-          <div className="game2048-grid">
+          <div ref={boardRef} className="game2048-grid">
             {grid.map((v, i) => (
               <div key={i} className="game2048-cell"
                    style={{ background: TILE_COLORS[v] || '#3c3a32', color: v > 4 ? '#f9f6f2' : '#776e65' }}>
@@ -156,7 +187,7 @@ export default function Game2048({ onClose }) {
               </div>
             ))}
           </div>
-          <p className="snake-hint">↑↓←→ ARROW KEYS · MERGE TILES · GET 2048</p>
+          <p className="snake-hint">ARROW KEYS / SWIPE · MERGE TILES · GET 2048</p>
         </div>
       </div>
     </div>

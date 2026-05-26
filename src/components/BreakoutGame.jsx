@@ -38,10 +38,23 @@ function GameInstance({ onClose, onRetry }) {
       padX = Math.min(W-PW, Math.max(0, e.clientX - r.left - PW/2))
       if (!launched) { launched = true; setInfo(i => ({ ...i, status: 'playing' })) }
     }
+    // Touch — drag finger across the canvas to position paddle, tap to launch.
+    // canvas backing buffer is W×H but rendered at CSS width — scale touch X accordingly.
+    const onTouch = e => {
+      e.preventDefault()
+      const t = e.touches[0] || e.changedTouches[0]
+      if (!t) return
+      const r = canvas.getBoundingClientRect()
+      const scale = W / r.width
+      padX = Math.min(W-PW, Math.max(0, (t.clientX - r.left) * scale - PW/2))
+      if (!launched) { launched = true; setInfo(i => ({ ...i, status: 'playing' })) }
+    }
     window.addEventListener('keydown', onKey)
     window.addEventListener('keyup', onKey)
     canvas.addEventListener('mousemove', onMouse)
     canvas.addEventListener('click', onMouse)
+    canvas.addEventListener('touchstart', onTouch, { passive: false })
+    canvas.addEventListener('touchmove',  onTouch, { passive: false })
 
     const reset = (keepLevel = false) => {
       padX = W/2-PW/2; bx = padX+PW/2; by = H-60
@@ -107,6 +120,8 @@ function GameInstance({ onClose, onRetry }) {
       window.removeEventListener('keyup', onKey)
       canvas.removeEventListener('mousemove', onMouse)
       canvas.removeEventListener('click', onMouse)
+      canvas.removeEventListener('touchstart', onTouch)
+      canvas.removeEventListener('touchmove',  onTouch)
     }
   }, [])
 
@@ -120,7 +135,7 @@ function GameInstance({ onClose, onRetry }) {
         </div>
         <canvas ref={canvasRef} width={W} height={H} className="breakout-canvas" />
         {info.status === 'idle' && (
-          <p className="snake-hint">CLICK OR SPACE TO LAUNCH · ←→ MOVE PADDLE</p>
+          <p className="snake-hint">TAP / CLICK / SPACE TO LAUNCH · MOVE PADDLE WITH FINGER OR ARROWS</p>
         )}
         {info.status === 'dead' && (
           <div style={{ textAlign: 'center', padding: '0.5rem' }}>

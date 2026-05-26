@@ -45,6 +45,37 @@ function GameCanvas({ onClose, onOver }) {
     window.addEventListener('keydown', onKey)
     window.addEventListener('keyup', onKey)
 
+    // Touch — drag finger to position ship, tap (no drag) to fire
+    const fireBullet = () => {
+      if (bullets.length < 3) {
+        bullets.push({ x: playerX + PW / 2, y: H - 40 })
+        playBlip(880)
+      }
+    }
+    let touchStartX = 0, touchStartY = 0, touchMoved = false
+    const onTouchStart = e => {
+      e.preventDefault()
+      const t = e.touches[0]
+      touchStartX = t.clientX; touchStartY = t.clientY; touchMoved = false
+    }
+    const onTouchMove = e => {
+      e.preventDefault()
+      const t = e.touches[0]
+      const r = canvas.getBoundingClientRect()
+      const scale = W / r.width
+      playerX = Math.min(W - PW, Math.max(0, (t.clientX - r.left) * scale - PW / 2))
+      if (Math.abs(t.clientX - touchStartX) > 6 || Math.abs(t.clientY - touchStartY) > 6) {
+        touchMoved = true
+      }
+    }
+    const onTouchEnd = e => {
+      e.preventDefault()
+      if (!touchMoved) fireBullet()
+    }
+    canvas.addEventListener('touchstart', onTouchStart, { passive: false })
+    canvas.addEventListener('touchmove',  onTouchMove,  { passive: false })
+    canvas.addEventListener('touchend',   onTouchEnd,   { passive: false })
+
     let last = 0
     const die = () => { onOver(score); playGameOver() }
 
@@ -126,7 +157,7 @@ function GameCanvas({ onClose, onOver }) {
 
       ctx.fillStyle = '#888'; ctx.font = '8px monospace'; ctx.textAlign = 'left'
       ctx.fillText(`♥${lives}  SCORE:${score}  WAVE:${wave}`, 6, 14)
-      ctx.fillText('←→ MOVE · SPACE SHOOT', 6, H - 4)
+      ctx.fillText('←→ / DRAG MOVE · SPACE / TAP SHOOT', 6, H - 4)
 
       raf = requestAnimationFrame(loop)
     }
@@ -136,6 +167,9 @@ function GameCanvas({ onClose, onOver }) {
       cancelAnimationFrame(raf)
       window.removeEventListener('keydown', onKey)
       window.removeEventListener('keyup', onKey)
+      canvas.removeEventListener('touchstart', onTouchStart)
+      canvas.removeEventListener('touchmove',  onTouchMove)
+      canvas.removeEventListener('touchend',   onTouchEnd)
     }
   }, [])  // eslint-disable-line react-hooks/exhaustive-deps
 

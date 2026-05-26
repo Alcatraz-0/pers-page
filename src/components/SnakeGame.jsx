@@ -107,10 +107,15 @@ export default function SnakeGame({ onClose }) {
     setPhase('running')
   }
 
-  // Input
+  // Input — keyboard + touch swipe
   useEffect(() => {
-    const onKey = (e) => {
+    const setDir = (nd) => {
       const g = gameRef.current
+      // Prevent reversing into self
+      if (nd.x !== -g.dir.x || nd.y !== -g.dir.y) g.nextDir = nd
+    }
+
+    const onKey = (e) => {
       const map = {
         ArrowUp:    { x: 0,  y: -1 },
         ArrowDown:  { x: 0,  y: 1  },
@@ -122,14 +127,39 @@ export default function SnakeGame({ onClose }) {
         d: { x: 1,  y: 0  },
       }
       const nd = map[e.key]
-      if (nd) {
-        e.preventDefault()
-        // Prevent reversing
-        if (nd.x !== -g.dir.x || nd.y !== -g.dir.y) g.nextDir = nd
-      }
+      if (nd) { e.preventDefault(); setDir(nd) }
     }
     window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+
+    // Touch swipe — direction picked from dominant axis once threshold crossed
+    const canvas = canvasRef.current
+    const SWIPE_MIN = 24  // px before we commit to a direction
+    let tx = 0, ty = 0, active = false
+    const onTouchStart = (e) => {
+      const t = e.touches[0]
+      tx = t.clientX; ty = t.clientY; active = true
+    }
+    const onTouchMove = (e) => {
+      if (!active) return
+      e.preventDefault()
+      const t = e.touches[0]
+      const dx = t.clientX - tx, dy = t.clientY - ty
+      if (Math.abs(dx) < SWIPE_MIN && Math.abs(dy) < SWIPE_MIN) return
+      if (Math.abs(dx) > Math.abs(dy)) setDir({ x: dx > 0 ? 1 : -1, y: 0 })
+      else                              setDir({ x: 0, y: dy > 0 ? 1 : -1 })
+      tx = t.clientX; ty = t.clientY  // reset so a second swipe in same gesture works
+    }
+    const onTouchEnd = () => { active = false }
+    canvas?.addEventListener('touchstart', onTouchStart, { passive: true })
+    canvas?.addEventListener('touchmove',  onTouchMove,  { passive: false })
+    canvas?.addEventListener('touchend',   onTouchEnd,   { passive: true })
+
+    return () => {
+      window.removeEventListener('keydown', onKey)
+      canvas?.removeEventListener('touchstart', onTouchStart)
+      canvas?.removeEventListener('touchmove',  onTouchMove)
+      canvas?.removeEventListener('touchend',   onTouchEnd)
+    }
   }, [])
 
   // Game loop
@@ -171,7 +201,7 @@ export default function SnakeGame({ onClose }) {
           </div>
         )}
 
-        <p className="snake-hint">ARROW KEYS / WASD TO MOVE · ESC TO CLOSE</p>
+        <p className="snake-hint">ARROWS / WASD / SWIPE · ESC TO CLOSE</p>
       </div>
     </div>
   )

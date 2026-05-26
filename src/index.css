@@ -1770,7 +1770,7 @@ a.island-card:hover {
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 3rem 4rem;
+  padding: clamp(1rem, 5vw, 3rem) clamp(1rem, 6vw, 4rem);
   animation: crt-unblank 0.75s cubic-bezier(0.2, 0, 0.4, 1) forwards,
              crt-flicker 4s linear 0.75s infinite;
 }
@@ -2294,7 +2294,7 @@ html.konami nav { border-bottom-color: transparent !important; }
   cursor: pointer;
 }
 .snake-close:hover { color: #ef4444; }
-.snake-canvas { display: block; }
+.snake-canvas { display: block; touch-action: none; max-width: 100%; height: auto; }
 .snake-overlay-msg {
   position: absolute;
   inset: 40px 0 40px;
@@ -2323,8 +2323,9 @@ html.konami nav { border-bottom-color: transparent !important; }
 /* ── 2048 game ── */
 .game2048-modal { width: min(380px, 96vw); }
 .game2048-body  { padding: 1rem; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; position: relative; }
-.game2048-grid  { display: grid; grid-template-columns: repeat(4, 70px); grid-template-rows: repeat(4, 70px); gap: 6px; background: #bbada0; padding: 6px; }
-.game2048-cell  { width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; font-family: var(--pixel); font-size: 0.65rem; font-weight: bold; background: #cdc1b4; }
+/* Cell size = (min(330px, 86vw) - padding*2 - gap*3) / 4 — scales down on phones */
+.game2048-grid  { display: grid; grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); width: min(304px, 86vw); aspect-ratio: 1; gap: 6px; background: #bbada0; padding: 6px; touch-action: none; }
+.game2048-cell  { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-family: var(--pixel); font-size: clamp(0.55rem, 2.6vw, 0.65rem); font-weight: bold; background: #cdc1b4; }
 .game2048-overlay-msg { position: absolute; inset: 0; background: rgba(0,0,0,0.7); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; font-family: var(--pixel); font-size: 0.6rem; color: #fff; z-index: 10; }
 
 /* ── Whack-a-Bug ── */
@@ -2394,6 +2395,7 @@ html.konami nav { border-bottom-color: transparent !important; }
 
 /* ── RESPONSIVE ── */
 @media (max-width: 768px) {
+  /* Nav — collapse to hamburger */
   .w98-nav-links {
     display: none;
     flex-direction: column;
@@ -2406,49 +2408,106 @@ html.konami nav { border-bottom-color: transparent !important; }
   }
   [data-theme="dark"] .w98-nav-links { background: #1a1a2e; }
   .w98-nav-links.open { display: flex; }
-  .w98-hamburger { display: flex; }
+  .w98-nav-link { padding: 0.75rem 1rem; font-size: 0.65rem; }  /* big tap target */
+  .w98-hamburger { display: flex; min-width: 44px; min-height: 44px; }
   .w98-title-text { font-size: 0.34rem; }
   .avail-badge { display: none; }
+
+  /* Section content — single-column grids */
   .projects-grid { grid-template-columns: 1fr; }
   .skills-grid { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
-  .hero-stats { flex-direction: column; }
-  section { padding: 3rem 1.25rem; }
+
+  /* Hero — stats as 2x2 grid (4-tall stack is too cramped) */
+  .hero-stats { display: grid !important; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .stat-card { padding: 0.6rem 0.8rem; }
   .hero-inner { padding: 0 1.25rem; }
-  /* Footer landscape — shrink sprites and remove massive side padding */
+  .hero-bio { font-size: 0.92rem; line-height: 1.65; }
+  .hero-cta { gap: 0.6rem; flex-wrap: wrap; }
+  .hero-cta .btn { flex: 1 1 auto; text-align: center; min-width: 140px; }
+
+  /* Tags should wrap nicely */
+  .hero-tags { gap: 0.35rem; }
+  .tag { font-size: 0.5rem; padding: 4px 8px; }
+
+  /* Sections — tighter side padding */
+  section { padding: 3rem 1.25rem; }
+
+  /* Timeline — collapse the side escalator on phones (decoration only) */
+  .timeline-layout { flex-direction: column; gap: 1rem; }
+  .tl-escalator { flex-direction: row; padding-top: 0; width: 100%; }
+  .tl-progress-track { width: 100%; height: 4px; min-height: unset; }
+  .tl-progress-fill { inset: 0 auto 0 0; }
+  @keyframes tl-fill { 0% { width: 0%; } 80%, 100% { width: 100%; } }
+
+  /* Game launchers — wider tap targets */
+  .snake-launcher { padding: 8px 10px; min-height: 36px; }
+  .launcher-toggle { padding: 8px 12px; min-height: 40px; }
+
+  /* Game modals — never wider than the viewport */
+  .snake-modal { max-width: 96vw; max-height: 92vh; overflow: auto; }
+  .snake-header { gap: 0.5rem; padding: 0.5rem 0.75rem; flex-wrap: wrap; }
+  .snake-title, .snake-scores { font-size: 0.58rem; }
+  .snake-close { padding: 4px 8px; min-width: 32px; min-height: 32px; }
+
+  /* Footer landscape — shrink sprites and side padding */
   .fl-ground-sprites { padding: 0 12px; gap: 0.6rem; }
   .fl-sprite { width: 56px; height: 56px; }
   .fl-tree-fore { height: 200px; }
   .footer-landscape { height: 420px; }
+
+  /* Sky slider — slightly more compact on tablets */
+  .sky-slider-wrap { bottom: 1rem; width: min(440px, 94vw); }
+  .sky-stop-icon { font-size: 0.9rem; }
 }
+
 @media (max-width: 480px) {
-  .hero-name { font-size: clamp(0.5rem, 3.5vw, 0.8rem); }
+  /* Typography — keep pixel font readable, don't go below 0.7rem */
+  .hero-name { font-size: clamp(0.7rem, 4.2vw, 1.1rem); }
   .section-title { font-size: 0.8rem; }
-  .btn { font-size: 0.58rem; padding: 10px 14px; }
-  /* footer even more compact */
+  .section-label { font-size: 0.55rem; }
+  .btn { font-size: 0.58rem; padding: 12px 14px; min-height: 40px; }
+
+  /* Nav bar right section */
+  .w98-menubar-right { gap: 4px; }
+  .resume-dl-btn { font-size: 0.5rem; padding: 4px 6px; min-height: 32px; }
+
+  /* Footer even more compact */
   .fl-ground-sprites { padding: 0 8px; gap: 0.35rem; }
   .fl-sprite { width: 44px; height: 44px; }
   .footer-landscape { height: 360px; }
 
-  /* Nav bar right section */
-  .w98-menubar-right { gap: 4px; }
-  .resume-dl-btn { font-size: 0.4rem; padding: 2px 4px; }
-
   /* Coin display — stay on-screen at 320px */
-  .coin-display { right: 4px; font-size: 0.45rem; padding: 4px 6px; }
+  .coin-display { right: 4px; font-size: 0.5rem; padding: 5px 7px; }
 
   /* Achievement toasts */
   .achievement-stack { max-width: min(300px, 90vw); right: 5vw; }
-  .achievement-toast { font-size: 0.45rem; padding: 8px 10px; }
+  .achievement-toast { font-size: 0.5rem; padding: 8px 10px; }
 
-  /* Game launcher stack */
-  .game-launcher-stack { right: 5vw; bottom: 60px; }
-  .launcher-panel { gap: 4px; }
-  .snake-launcher { font-size: 0.4rem; padding: 4px 6px; }
-  .launcher-toggle { font-size: 0.4rem; padding: 5px 8px; }
+  /* Game launcher stack — fewer-pixel labels, larger tap targets */
+  .game-launcher-stack { right: 4vw; bottom: 60px; }
+  .launcher-panel { gap: 5px; }
+  .snake-launcher { font-size: 0.5rem; padding: 8px 10px; min-height: 36px; }
+  .launcher-toggle { font-size: 0.5rem; padding: 9px 12px; min-height: 40px; }
 
   /* XP bar */
-  .hire-xp-bar { padding: 4px 8px; font-size: 0.4rem; }
+  .hire-xp-bar { padding: 6px 10px; font-size: 0.48rem; }
+
+  /* Hero CTAs full-width below 480 — easier to thumb-tap */
+  .hero-cta .btn { width: 100%; }
+
+  /* Sky slider stops — make labels stack more compactly */
+  .sky-stop-label { font-size: 0.32rem; }
+  .sky-stop-icon { font-size: 0.8rem; }
+
+  /* Terminal — keyboard-only, hide the floating toggle */
+  .terminal-toggle { display: none; }
+
+  /* Heatmap can be scrolled horizontally on phones */
+  .heatmap-wrap { -webkit-overflow-scrolling: touch; }
+
+  /* HireMeXP — keep the bar from spilling */
+  .hire-xp-bar { max-width: 92vw; }
 }
 
 /* ══════════════════════════════════════════════
@@ -3251,7 +3310,8 @@ html.konami nav { border-bottom-color: transparent !important; }
 
 /* ── Breakout game ── */
 .breakout-modal { width: min(420px, 98vw); }
-.breakout-canvas { display: block; cursor: crosshair; border: 2px solid var(--border); }
+.breakout-canvas { display: block; cursor: crosshair; border: 2px solid var(--border); touch-action: none; max-width: 100%; height: auto; }
+.invaders-modal canvas { touch-action: none; max-width: 100%; height: auto; display: block; }
 
 /* ── Space Invaders ── */
 .invaders-modal { width: min(420px, 98vw); }

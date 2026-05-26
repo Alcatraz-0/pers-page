@@ -5,8 +5,9 @@ const DURATION  = 500 // ms
 
 export default function CursorSparkle() {
   useEffect(() => {
-    // Skip entirely on touch / coarse-pointer devices
+    // Skip on touch / coarse-pointer devices and when user prefers reduced motion
     if (window.matchMedia('(pointer: coarse)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const rainbow = localStorage.getItem('cursor-rainbow') === '1'
 
@@ -20,16 +21,11 @@ export default function CursorSparkle() {
       pool.push(el)
     }
 
-    // Mutated in-place — avoids object allocation on every mousemove / spawn
-    const latest   = { x: 0, y: 0 }
     const lastSpawn = { x: -999, y: -999 }
     let poolIdx = 0
-
-    const onMove = (e) => {
-      latest.x = e.clientX
-      latest.y = e.clientY
-    }
-    window.addEventListener('mousemove', onMove, { passive: true })
+    let pending = false
+    let raf = 0
+    let pendingX = 0, pendingY = 0
 
     function spawnParticle(x, y) {
       const el = pool[poolIdx % POOL_SIZE]
@@ -41,25 +37,30 @@ export default function CursorSparkle() {
       el.style.animation  = `sparkle-drift ${DURATION}ms ease forwards`
     }
 
-    let rafId
-    function loop() {
-      const { x, y } = latest
-      const dx = x - lastSpawn.x, dy = y - lastSpawn.y
-
-      if (dx * dx + dy * dy > 4) { // moved more than 2px since last spawn
-        spawnParticle(x, y)
-        if (rainbow) spawnParticle(x, y)
-        lastSpawn.x = x
-        lastSpawn.y = y
+    function flush() {
+      pending = false
+      raf = 0
+      const dx = pendingX - lastSpawn.x, dy = pendingY - lastSpawn.y
+      if (dx * dx + dy * dy > 4) {
+        spawnParticle(pendingX, pendingY)
+        if (rainbow) spawnParticle(pendingX, pendingY)
+        lastSpawn.x = pendingX
+        lastSpawn.y = pendingY
       }
-
-      rafId = requestAnimationFrame(loop)
     }
-    rafId = requestAnimationFrame(loop)
+
+    const onMove = (e) => {
+      pendingX = e.clientX
+      pendingY = e.clientY
+      if (pending || document.hidden) return
+      pending = true
+      raf = requestAnimationFrame(flush)
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
 
     return () => {
       window.removeEventListener('mousemove', onMove)
-      cancelAnimationFrame(rafId)
+      if (raf) cancelAnimationFrame(raf)
       pool.forEach(el => el.remove())
     }
   }, [])

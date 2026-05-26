@@ -42,13 +42,12 @@ function skyIdxFromTime() {
   return 0
 }
 
+// 3 butterflies instead of 6 — each animated GIF burns CPU on decode.
+// Halving the count cuts that cost without the loss being noticeable.
 const BUTTERFLIES = [
   { src: '/sprites/animated_butterfly_48x48.gif',   style: { top: '12%', left: '8%',  animationDelay: '0s',   animationDuration: '14s' } },
-  { src: '/sprites/animated_butterfly_2_48x48.gif', style: { top: '22%', left: '72%', animationDelay: '-4s',  animationDuration: '18s' } },
-  { src: '/sprites/animated_butterfly_3_48x48.gif', style: { top: '8%',  left: '55%', animationDelay: '-8s',  animationDuration: '16s' } },
-  { src: '/sprites/animated_butterfly_4_48x48.gif', style: { top: '35%', left: '18%', animationDelay: '-2s',  animationDuration: '20s' } },
-  { src: '/sprites/animated_butterfly_5_48x48.gif', style: { top: '18%', left: '40%', animationDelay: '-11s', animationDuration: '15s' } },
-  { src: '/sprites/animated_butterfly_6_48x48.gif', style: { top: '42%', left: '82%', animationDelay: '-6s',  animationDuration: '17s' } },
+  { src: '/sprites/animated_butterfly_3_48x48.gif', style: { top: '18%', left: '55%', animationDelay: '-8s', animationDuration: '16s' } },
+  { src: '/sprites/animated_butterfly_5_48x48.gif', style: { top: '34%', left: '78%', animationDelay: '-4s', animationDuration: '20s' } },
 ]
 
 function randVariant(idx) {
@@ -133,80 +132,100 @@ export default function Hero() {
     return () => obs.disconnect()
   }, [])
 
-  // rAF loop — scroll parallax on sky bg + content fade-out + horizon reveal
+  // Parallax — event-driven (no continuous rAF). Schedules at most one frame
+  // per scroll/mouse event; sleeps completely when idle, off-screen, or tab hidden.
   useEffect(() => {
-    const onScroll = () => { scrollYRef.current = window.scrollY }
-    window.addEventListener('scroll', onScroll, { passive: true })
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return  // honour the OS setting — no parallax at all
 
     const hero = heroRef.current
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches
+
+    // Cache layout-dependent value — recompute on resize, not every frame
+    let heroH = hero.offsetHeight
+    let visible = true
+    let raf = 0
+    let pending = false
+
+    function paint() {
+      pending = false
+      raf = 0
+      if (!visible) return
+
+      const sY = scrollYRef.current
+      const { x, y } = mouseOffRef.current
+      const scrollRoom = heroH * SCROLL_ROOM_VH
+      const prog = Math.min(1, Math.max(0, sY / scrollRoom))
+
+      const stack = skyStackRef.current
+      if (stack) stack.style.transform =
+        `translate3d(${-x * 0.003}px, ${-(sY * 0.06) - (y * 0.002)}px, 0)`
+
+      if (cloudFarRef.current)  cloudFarRef.current.style.transform  = `translate3d(${-x * 0.008}px, ${-y * 0.004 + sY * 0.04}px, 0)`
+      if (cloudMidRef.current)  cloudMidRef.current.style.transform  = `translate3d(${-x * 0.014}px, ${-y * 0.007 + sY * 0.08}px, 0)`
+      if (cloudNearRef.current) cloudNearRef.current.style.transform = `translate3d(${x  * 0.006}px, ${y  * 0.003 + sY * 0.13}px, 0)`
+
+      const inner = heroInnerRef.current
+      if (inner) {
+        const fadeProg = Math.max(0, (prog - 0.4) / 0.55)
+        inner.style.opacity = String(Math.max(0, 1 - fadeProg))
+        inner.style.transform = `translate3d(0, ${-prog * 50}px, 0)`
+      }
+
+      const slider = sliderRef.current
+      if (slider) slider.style.opacity = String(Math.max(0, 1 - prog * 2.5))
+
+      const horizon = horizonRef.current
+      if (horizon) {
+        horizon.style.opacity = String(Math.min(1, prog * 2.2))
+        horizon.style.transform = `translate3d(0, ${(1 - prog) * 40}px, 0)`
+      }
+    }
+
+    function schedule() {
+      if (pending || document.hidden || !visible) return
+      pending = true
+      raf = requestAnimationFrame(paint)
+    }
+
+    const onScroll = () => { scrollYRef.current = window.scrollY; schedule() }
     const onMouse = (e) => {
       const r = hero.getBoundingClientRect()
       mouseOffRef.current = {
         x: e.clientX - r.left - r.width / 2,
         y: e.clientY - r.top  - r.height / 2,
       }
+      schedule()
     }
-    const onLeave = () => { mouseOffRef.current = { x: 0, y: 0 } }
-    hero.addEventListener('mousemove', onMouse)
-    hero.addEventListener('mouseleave', onLeave)
+    const onLeave = () => { mouseOffRef.current = { x: 0, y: 0 }; schedule() }
+    const onResize = () => { heroH = hero.offsetHeight; schedule() }
+    const onVisibility = () => { if (!document.hidden) schedule() }
 
-    // Pause drawing work when hero is fully off-screen
-    const heroObs = new IntersectionObserver(
-      ([entry]) => { heroVisibleRef.current = entry.isIntersecting },
-      { rootMargin: '200px 0px -200px 0px' }
-    )
+    const heroObs = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting
+      heroVisibleRef.current = visible
+      if (visible) schedule()
+    }, { rootMargin: '200px 0px -200px 0px' })
     heroObs.observe(hero)
 
-    let raf
-    function tick() {
-      if (!heroVisibleRef.current) { raf = requestAnimationFrame(tick); return }
-
-      const sY = scrollYRef.current
-      const { x, y } = mouseOffRef.current
-      const heroH = hero.offsetHeight
-      const scrollRoom = heroH * SCROLL_ROOM_VH
-      const prog = Math.min(1, Math.max(0, sY / scrollRoom))
-
-      // Sky background: gentle parallax scroll (0.06×) + hair-thin mouse nudge
-      const stack = skyStackRef.current
-      if (stack) {
-        stack.style.transform =
-          `translateX(${-x * 0.003}px) translateY(${-(sY * 0.06) - (y * 0.002)}px)`
-      }
-
-      // Cloud layers: mouse parallax + scroll depth (near moves faster than far)
-      if (cloudFarRef.current)  cloudFarRef.current.style.transform  = `translateX(${-x * 0.008}px) translateY(${-y * 0.004 + sY * 0.04}px)`
-      if (cloudMidRef.current)  cloudMidRef.current.style.transform  = `translateX(${-x * 0.014}px) translateY(${-y * 0.007 + sY * 0.08}px)`
-      if (cloudNearRef.current) cloudNearRef.current.style.transform = `translateX(${x  * 0.006}px) translateY(${y  * 0.003 + sY * 0.13}px)`
-
-      // Hero content: fade + lift — starts at 40% scroll, fully gone at 95%
-      const inner = heroInnerRef.current
-      if (inner) {
-        const fadeProg = Math.max(0, (prog - 0.4) / 0.55)
-        inner.style.opacity = String(Math.max(0, 1 - fadeProg))
-        inner.style.transform = `translateY(${-prog * 50}px)`
-      }
-
-      // Slider: fade out from 20% scroll
-      const slider = sliderRef.current
-      if (slider) slider.style.opacity = String(Math.max(0, 1 - prog * 2.5))
-
-      // Horizon: rise from bottom
-      const horizon = horizonRef.current
-      if (horizon) {
-        horizon.style.opacity = String(Math.min(1, prog * 2.2))
-        horizon.style.transform = `translateY(${(1 - prog) * 40}px)`
-      }
-
-      raf = requestAnimationFrame(tick)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onResize)
+    document.addEventListener('visibilitychange', onVisibility)
+    if (hasFinePointer) {
+      hero.addEventListener('mousemove', onMouse)
+      hero.addEventListener('mouseleave', onLeave)
     }
-    raf = requestAnimationFrame(tick)
+    paint()  // initial paint
 
     return () => {
       window.removeEventListener('scroll', onScroll)
-      hero.removeEventListener('mousemove', onMouse)
-      hero.removeEventListener('mouseleave', onLeave)
-      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', onResize)
+      document.removeEventListener('visibilitychange', onVisibility)
+      if (hasFinePointer) {
+        hero.removeEventListener('mousemove', onMouse)
+        hero.removeEventListener('mouseleave', onLeave)
+      }
+      if (raf) cancelAnimationFrame(raf)
       heroObs.disconnect()
     }
   }, [])
@@ -289,7 +308,7 @@ export default function Hero() {
         )}
 
         {showButterflies && BUTTERFLIES.map((b, i) => (
-          <img key={i} src={b.src} alt="" className="hero-butterfly-gif" style={b.style} />
+          <img key={i} src={b.src} alt="" loading="lazy" decoding="async" className="hero-butterfly-gif" style={b.style} />
         ))}
 
         <div className="hero-inner" ref={heroInnerRef}>

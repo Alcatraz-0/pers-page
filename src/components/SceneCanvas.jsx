@@ -1,6 +1,7 @@
 import { useEffect, useImperativeHandle, useRef, forwardRef } from 'react'
 
-const FPS = 30
+// 20fps is plenty for ambient stars / rain — saves ~33% canvas draw cost vs 30.
+const FPS = 20
 const FRAME_MS = 1000 / FPS
 
 function rand(min, max) { return min + Math.random() * (max - min) }

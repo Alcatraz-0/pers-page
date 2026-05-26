@@ -53,6 +53,19 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
+/* ── Reduced-motion + low-power mode: kill all looping animations & parallax ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .hero-butterfly-gif,
+  .hero-parallax-clouds,
+  .scroll-walker { display: none !important; }
+}
+
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border: 2px solid var(--bg); }
@@ -432,6 +445,12 @@ section {
   margin: 0 auto;
   position: relative;
 }
+/* Skip layout + paint work for off-screen sections — huge scroll win.
+   Excludes #hero (sticky parallax must stay live). */
+.post-hero-content > section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
 
 .section-label {
   font-family: var(--pixel);
@@ -559,15 +578,17 @@ section {
   background-size: auto 100%;
   background-position: 0 bottom;
   image-rendering: pixelated;
+  /* Promote to its own GPU layer up-front so JS translate3d writes are pure composite */
+  will-change: transform;
+  transform: translateZ(0);
 }
-.hpc-far  { opacity: 0.45; animation: hpc-scroll 90s linear infinite; }
-.hpc-mid  { opacity: 0.55; animation: hpc-scroll 55s linear infinite; }
-.hpc-near { opacity: 0.65; animation: hpc-scroll 32s linear infinite reverse; }
-
-@keyframes hpc-scroll {
-  from { background-position-x: 0; }
-  to   { background-position-x: -576px; }
-}
+/* Cloud layers — drift via JS-driven translate3d on scroll/mouse only.
+   Removed the always-running CSS background-position animation: it paints
+   continuously even when hero is off-screen and is the #1 cause of idle
+   CPU + fan noise without GPU acceleration. */
+.hpc-far  { opacity: 0.45; }
+.hpc-mid  { opacity: 0.55; }
+.hpc-near { opacity: 0.65; }
 
 /* Dawn fog wisp overlay */
 .dawn-fog {

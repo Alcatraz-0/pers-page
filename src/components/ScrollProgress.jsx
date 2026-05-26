@@ -1,22 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 export default function ScrollProgress() {
-  const [pct, setPct] = useState(0)
+  const fillRef = useRef(null)
 
   useEffect(() => {
-    const onScroll = () => {
-      const el = document.documentElement
-      const scrolled = el.scrollTop || document.body.scrollTop
-      const total = el.scrollHeight - el.clientHeight
-      setPct(total > 0 ? (scrolled / total) * 100 : 0)
+    const el = document.documentElement
+    let total = el.scrollHeight - el.clientHeight
+    let raf = 0
+    let ticking = false
+
+    const recomputeTotal = () => { total = el.scrollHeight - el.clientHeight }
+    recomputeTotal()
+
+    const write = () => {
+      ticking = false
+      if (!fillRef.current) return
+      const pct = total > 0 ? (window.scrollY / total) * 100 : 0
+      fillRef.current.style.width = pct + '%'
     }
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      raf = requestAnimationFrame(write)
+    }
+    const onResize = () => { recomputeTotal(); onScroll() }
+
+    write()
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+    window.addEventListener('resize', onResize)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onResize)
+      cancelAnimationFrame(raf)
+    }
   }, [])
 
   return (
     <div className="scroll-progress-track">
-      <div className="scroll-progress-fill" style={{ width: `${pct}%` }} />
+      <div ref={fillRef} className="scroll-progress-fill" />
     </div>
   )
 }

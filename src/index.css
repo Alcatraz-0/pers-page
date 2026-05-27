@@ -40,8 +40,8 @@
   --card-bg: #24201b;
 }
 
-/* Base rem scale — 14px */
-html { font-size: 14px; scroll-behavior: smooth; }
+/* Base rem scale — 14.7px (5% bump from 14px) */
+html { font-size: 14.7px; scroll-behavior: smooth; }
 
 body {
   background: var(--bg);

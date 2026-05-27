@@ -5,7 +5,8 @@
   --ink: #1a1612;
   --border: #c8bfaa;
   --shadow: #a89f8c;
-  --muted: #6b6358;
+  /* --muted darkened from #6b6358 → #5a5448 for stronger contrast on pixel text */
+  --muted: #5a5448;
   --card-bg: #faf7f2;
   /* c1 = primary (buttons, bars, active nav, stats) */
   /* c2 = secondary (labels, badges, icons, timeline) */
@@ -36,7 +37,8 @@
   --ink: #f5f0e8;
   --border: #3d3730;
   --shadow: #0d0b09;
-  --muted: #a89f8c;
+  /* --muted lightened from #a89f8c → #c2b9a8 for stronger contrast on pixel text */
+  --muted: #c2b9a8;
   --card-bg: #24201b;
 }
 
@@ -529,21 +531,50 @@ section {
   background: var(--bg);
 }
 
-/* Dawn/sunset: both are dark:true so page enters dark mode → var(--ink) is already light.
-   Add a subtle text shadow so text pops on any warm/colourful PNG variant. */
-#hero[data-sky="sunset"] .hero-eyebrow,
-#hero[data-sky="sunset"] .hero-name,
-#hero[data-sky="sunset"] .hero-role,
-#hero[data-sky="sunset"] .hero-bio,
-#hero[data-sky="sunset"] .stat-value,
-#hero[data-sky="sunset"] .stat-label,
-#hero[data-sky="dawn"] .hero-eyebrow,
-#hero[data-sky="dawn"] .hero-name,
-#hero[data-sky="dawn"] .hero-role,
-#hero[data-sky="dawn"] .hero-bio,
-#hero[data-sky="dawn"] .stat-value,
-#hero[data-sky="dawn"] .stat-label {
-  text-shadow: 0 1px 4px rgba(0,0,0,0.65), 0 0 12px rgba(0,0,0,0.3);
+/* Dawn / sunset / evening: warm or twilight skies that wash out muted text.
+   Force bright white + multi-layer dark halo so every glyph stays readable
+   regardless of which PNG variant is showing through. */
+#hero[data-sky="sunset"]  .hero-eyebrow,
+#hero[data-sky="sunset"]  .hero-name,
+#hero[data-sky="sunset"]  .hero-role,
+#hero[data-sky="sunset"]  .hero-bio,
+#hero[data-sky="sunset"]  .stat-value,
+#hero[data-sky="sunset"]  .stat-label,
+#hero[data-sky="dawn"]    .hero-eyebrow,
+#hero[data-sky="dawn"]    .hero-name,
+#hero[data-sky="dawn"]    .hero-role,
+#hero[data-sky="dawn"]    .hero-bio,
+#hero[data-sky="dawn"]    .stat-value,
+#hero[data-sky="dawn"]    .stat-label,
+#hero[data-sky="evening"] .hero-eyebrow,
+#hero[data-sky="evening"] .hero-name,
+#hero[data-sky="evening"] .hero-role,
+#hero[data-sky="evening"] .hero-bio,
+#hero[data-sky="evening"] .stat-value,
+#hero[data-sky="evening"] .stat-label {
+  color: #ffffff !important;
+  text-shadow:
+    0 0 2px  rgba(0, 0, 0, 0.95),
+    0 0 6px  rgba(0, 0, 0, 0.85),
+    0 0 14px rgba(0, 0, 0, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.90),
+     1px  1px 0 rgba(0, 0, 0, 0.55),
+    -1px -1px 0 rgba(0, 0, 0, 0.55);
+}
+
+/* Night/storm — also force white over the dark blue sky for stat values + bio
+   that were using muted gray and getting lost. */
+#hero[data-sky="night"] .hero-role,
+#hero[data-sky="night"] .hero-bio,
+#hero[data-sky="night"] .stat-label,
+#hero[data-sky="storm"] .hero-role,
+#hero[data-sky="storm"] .hero-bio,
+#hero[data-sky="storm"] .stat-label {
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow:
+    0 0 2px rgba(0, 0, 0, 0.85),
+    0 0 6px rgba(0, 0, 0, 0.65),
+    0 1px 2px rgba(0, 0, 0, 0.80);
 }
 
 /* Crossfading sky PNG stack */

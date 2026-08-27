@@ -1,6 +1,6 @@
 <!-- ████████████████████████████████████████████████████
      ANAND_MEENA.EXE — GitHub Profile README
-     Pixel-art RPG theme · Portfolio: https://1d232893.pers-page.pages.dev/
+     Pixel-art RPG theme · Portfolio: https://anandmeena.dev
      ████████████████████████████████████████████████████ -->
 
 <!-- ── W98 TITLE BAR ── -->
@@ -31,7 +31,7 @@
       📍 Chicago, IL &nbsp;·&nbsp;
       <a href="mailto:anand.01ntgy@gmail.com" style="color:#6b6358;text-decoration:none;">anand.01ntgy@gmail.com</a> &nbsp;·&nbsp;
       <a href="https://linkedin.com/in/anandm01" style="color:#2563eb;text-decoration:none;">LinkedIn</a> &nbsp;·&nbsp;
-      <a href="https://1d232893.pers-page.pages.dev/" style="color:#2563eb;text-decoration:none;">🌐 Portfolio</a>
+      <a href="https://anandmeena.dev" style="color:#2563eb;text-decoration:none;">🌐 Portfolio</a>
     </td>
     <td align="right" style="padding:8px 16px;color:#16a34a;font-size:11px;font-family:monospace;">● OPEN TO WORK</td>
   </tr>
@@ -94,7 +94,7 @@
     <td style="padding:4px 12px;color:#6b6358;font-size:11px;">REWARD</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🔮 <a href="https://github.com/Alcatraz-0/multimodal-rag-sec" style="color:#f5f0e8;text-decoration:none;">Multimodal RAG</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🔮 <a href="https://github.com/Alcatraz-0/Multi-Modal-RAG-for-SEC-10-K-Financial-Document-Analysis" style="color:#f5f0e8;text-decoration:none;">Multimodal RAG</a></td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/Python-1a1612?style=flat-square&logo=python&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
       <img src="https://img.shields.io/badge/LLaMA_3.2-1a1612?style=flat-square&logo=meta&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
@@ -103,7 +103,7 @@
     <td style="padding:8px 12px;color:#16a34a;font-size:11px;">85% Table Recall@5</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🏙️ <a href="https://github.com/Alcatraz-0/sf-property-tax-analysis" style="color:#f5f0e8;text-decoration:none;">SF Tax Analysis</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🏙️ <a href="https://github.com/Alcatraz-0/San-Francisco-Property-Tax-Analysis-Gentrification-Risk-Assessment" style="color:#f5f0e8;text-decoration:none;">SF Tax Analysis</a></td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/GeoPandas-1a1612?style=flat-square&logo=pandas&logoColor=f5f0e8&labelColor=16a34a" alt=""/>
       <img src="https://img.shields.io/badge/Plotly-1a1612?style=flat-square&logo=plotly&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
@@ -111,7 +111,7 @@
     <td style="padding:8px 12px;color:#16a34a;font-size:11px;">87.1% memory savings</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🚦 <a href="https://github.com/Alcatraz-0/chicago-traffic-analytics" style="color:#f5f0e8;text-decoration:none;">Traffic Analytics</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">🚦 <a href="https://github.com/Alcatraz-0/Chicago-Traffic-Crashes" style="color:#f5f0e8;text-decoration:none;">Traffic Analytics</a></td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/XGBoost-1a1612?style=flat-square&logo=python&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
       <img src="https://img.shields.io/badge/Scikit--learn-1a1612?style=flat-square&logo=scikitlearn&logoColor=f5f0e8&labelColor=16a34a" alt=""/>
@@ -119,7 +119,7 @@
     <td style="padding:8px 12px;color:#16a34a;font-size:11px;">0.597 RMSE · 938K rows</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">⚖️ <a href="https://github.com/Alcatraz-0/fairness-targeted-ads" style="color:#f5f0e8;text-decoration:none;">Fairness in Ads</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">⚖️ <a href="https://github.com/Alcatraz-0/Fairness-In-Targeted-Advertisements" style="color:#f5f0e8;text-decoration:none;">Fairness in Ads</a></td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/Fairlearn-1a1612?style=flat-square&logo=microsoft&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
       <img src="https://img.shields.io/badge/Python-1a1612?style=flat-square&logo=python&logoColor=f5f0e8&labelColor=16a34a" alt=""/>
@@ -127,7 +127,7 @@
     <td style="padding:8px 12px;color:#16a34a;font-size:11px;">93.4% bias reduction</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">⚡ <a href="https://github.com/Alcatraz-0/distributed-llm-pipeline" style="color:#f5f0e8;text-decoration:none;">Distributed AI</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">⚡ Distributed AI</td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/Scala-1a1612?style=flat-square&logo=scala&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
       <img src="https://img.shields.io/badge/Hadoop-1a1612?style=flat-square&logo=apachehadoop&logoColor=f5f0e8&labelColor=16a34a" alt=""/>
@@ -136,7 +136,7 @@
     <td style="padding:8px 12px;color:#16a34a;font-size:11px;">3× faster inference</td>
   </tr>
   <tr style="border-top:1px solid #3a3530;">
-    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">☁️ <a href="https://github.com/Alcatraz-0/multicloud-iaas-platform" style="color:#f5f0e8;text-decoration:none;">Multi-Cloud IaaS</a></td>
+    <td style="padding:8px 12px;color:#f5f0e8;font-size:11px;">☁️ Multi-Cloud IaaS</td>
     <td style="padding:8px 12px;">
       <img src="https://img.shields.io/badge/Kubernetes-1a1612?style=flat-square&logo=kubernetes&logoColor=f5f0e8&labelColor=2563eb" alt=""/>
       <img src="https://img.shields.io/badge/Terraform-1a1612?style=flat-square&logo=terraform&logoColor=f5f0e8&labelColor=16a34a" alt=""/>
@@ -217,7 +217,7 @@
   </tr>
   <tr style="border-bottom:1px solid #3a3530;">
     <td style="padding:7px 16px;color:#6b6358;font-size:11px;">🌐 Portfolio</td>
-    <td style="padding:7px 16px;font-size:11px;"><a href="https://1d232893.pers-page.pages.dev/" style="color:#2563eb;text-decoration:none;">1d232893.pers-page.pages.dev</a></td>
+    <td style="padding:7px 16px;font-size:11px;"><a href="https://anandmeena.dev" style="color:#2563eb;text-decoration:none;">anandmeena.dev</a></td>
   </tr>
   <tr>
     <td style="padding:7px 16px;color:#6b6358;font-size:11px;">📍 Location</td>
@@ -229,5 +229,5 @@
 
 <p align="center" style="font-family:monospace;color:#3a3530;font-size:11px;">
   ══════════════════════════════════════════════════════<br>
-  <span style="color:#6b6358;">Press ▶ Start &nbsp;·&nbsp; <a href="https://1d232893.pers-page.pages.dev/" style="color:#6b6358;text-decoration:none;">Interactive pixel-art portfolio</a></span>
+  <span style="color:#6b6358;">Press ▶ Start &nbsp;·&nbsp; <a href="https://anandmeena.dev" style="color:#6b6358;text-decoration:none;">Interactive pixel-art portfolio</a></span>
 </p>

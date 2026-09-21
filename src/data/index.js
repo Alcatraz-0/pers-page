@@ -138,7 +138,7 @@ export const RESEARCH = [
     venue: 'ICICBDA 2024 Conference Proceedings · January 2023 – June 2024 · First Author',
     abstract: 'Developed a cross-language question answering framework using Hugging Face Transformers, achieving 92% accuracy with 35.9–41.3 BLEU scores across multilingual language pairs. Fine-tuned transformer models for cross-lingual transfer demonstrate strong generalization over diverse multilingual benchmarks.',
     actions: [
-      { label: 'READ PAPER',    href: 'https://link.springer.com/chapter/10.1007/978-981-97-8031-0_29', primary: true },
+      { label: 'READ PAPER',    href: 'https://link.springer.com/chapter/10.1007/978-3-031-74682-6_21', primary: true },
       { label: 'GOOGLE SCHOLAR',href: 'https://scholar.google.com/citations?view_op=list_works&hl=en&user=gfqyyngAAAAJ', primary: false },
     ],
   },
